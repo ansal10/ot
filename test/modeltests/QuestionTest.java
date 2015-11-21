@@ -1,7 +1,7 @@
 package modeltests;
 
-import models.Option;
-import models.Question;
+import models.ot.Option;
+import models.ot.Question;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

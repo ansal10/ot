@@ -1,9 +1,9 @@
 package modeltests;
 
-import models.*;
-import models.Enums.TestType;
-import models.Test;
+import models.ot.*;
+import models.ot.Enums.TestType;
 import org.junit.*;
+import org.junit.Test;
 import play.test.FakeApplication;
 
 import java.util.Arrays;
@@ -22,7 +22,7 @@ public class ResultTest {
     Question q1,q2,q3;
     List<String> options1 = Arrays.asList("1", "2", "3", "4");
     List<String> options2 = Arrays.asList("sun is hot", "moon has light", "earth is 3rd planet","our is milkyway galaxy");
-    Test test;
+    models.ot.Test test;
     Users u1,u2;
 
     @Before
@@ -51,7 +51,7 @@ public class ResultTest {
                 option.save();
             }
         }
-        test = new models.Test("MCQ", TestType.AIEEE, (long)120,  (long)2, true, 10.0);
+        test = new models.ot.Test("MCQ", TestType.AIEEE, (long)120,  (long)2, true, 10.0);
         test.save();
 
         u1 = new Users("anas", "pass", "a@gmail.com", true, false);

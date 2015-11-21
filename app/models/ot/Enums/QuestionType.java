@@ -1,4 +1,4 @@
-package models.Enums;
+package models.ot.Enums;
 
 /**
  * Created by amd on 11/20/15.

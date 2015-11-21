@@ -1,7 +1,7 @@
-package models;
+package models.ot;
 
 import com.avaje.ebean.Model;
-import models.Enums.TestType;
+import models.ot.Enums.TestType;
 import org.joda.time.DateTime;
 
 import javax.persistence.Entity;

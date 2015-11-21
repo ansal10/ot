@@ -1,10 +1,10 @@
 package modeltests;
 
-import models.Enums.TestType;
-import models.Option;
-import models.Question;
-import models.TestQuestions;
-import models.Users;
+import models.ot.Enums.TestType;
+import models.ot.Option;
+import models.ot.Question;
+import models.ot.TestQuestions;
+import models.ot.Users;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,7 +26,7 @@ public class TestTest {
     List<String> options1 = Arrays.asList("1", "2", "3", "4");
     List<String> options2 = Arrays.asList("sun is hot", "moon has light", "earth is 3rd planet","our is milkyway galaxy");
     Users u1,u2;
-    models.Test test;
+    models.ot.Test test;
 
     @Before
     public void setUp() throws Exception {
@@ -68,14 +68,14 @@ public class TestTest {
 
     @Test
     public void createTest(){
-        test = new models.Test("MCQ", TestType.AIEEE, (long)2, true, 10.0);
+        test = new models.ot.Test("MCQ", TestType.AIEEE, (long)2, true, 10.0);
         test.save();
         assertTrue(test.getId() != null);
     }
 
     @Test
     public void addQuestions() throws Exception {
-        test = new models.Test("MCQ", TestType.AIEEE, (long)2, true, 10.0);
+        test = new models.ot.Test("MCQ", TestType.AIEEE, (long)2, true, 10.0);
         test.save();
         test.addQuestion(q1, 5.0, 1.0);
         test.addQuestion(q2, 5.0, 2.0);
@@ -86,27 +86,27 @@ public class TestTest {
 
     @Test
     public void testAddExtraQuestion(){
-        test = new models.Test("MCQ", TestType.AIEEE, (long)1, true, 10.0);
+        test = new models.ot.Test("MCQ", TestType.AIEEE, (long)1, true, 10.0);
         test.save();
         try {
             test.addQuestion(q1, 5.0, 1.0);
             test.addQuestion(q2, 5.0, 2.0);
             throw new Exception("This Exception is not expected");
         }catch (Exception e){
-            assertEquals(e.getMessage(), models.Test.ALREADY_DESIRED_NO_OF_QUESTION_EXIST);
+            assertEquals(e.getMessage(), models.ot.Test.ALREADY_DESIRED_NO_OF_QUESTION_EXIST);
         }
     }
 
     @Test
     public void testAddExtraMarksQuestion(){
-        test = new models.Test("MCQ", TestType.AIEEE, (long)2, true, 7.0);
+        test = new models.ot.Test("MCQ", TestType.AIEEE, (long)2, true, 7.0);
         test.save();
         try {
             test.addQuestion(q1, 5.0, 1.0);
             test.addQuestion(q2, 5.0, 2.0);
             throw new Exception("This Exception is not expected");
         }catch (Exception e){
-            assertEquals(e.getMessage(), models.Test.ADDING_QUESTION_EXCEEDS_TOTAL_MARKS);
+            assertEquals(e.getMessage(), models.ot.Test.ADDING_QUESTION_EXCEEDS_TOTAL_MARKS);
         }
     }
 }
