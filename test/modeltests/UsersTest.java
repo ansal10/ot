@@ -1,3 +1,5 @@
+package modeltests;
+
 import models.Users;
 import org.joda.time.DateTime;
 import org.junit.After;

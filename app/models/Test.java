@@ -6,7 +6,6 @@ import org.joda.time.DateTime;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import java.util.List;
 
@@ -23,17 +22,144 @@ public class Test  extends Model {
     private DateTime createdOn;
     private DateTime expiredOn;
     private TestType type;
-
+    private Long durations;
     private Long totalQuestions;
     private Boolean isActive;
-    private Long totalMarks;
+    private Double totalMarks;
 
 
-
-    @ManyToMany
-    private List<Users> users;
 
     @OneToMany
+    private List<Result> results;
+
+    @OneToMany(mappedBy = "test")
     private List<TestQuestions> testQuestionses;
 
+    public static Finder<String, Test> find = new Finder<String, Test>(Test.class);
+
+    public Test(String name, TestType type, Long totalQuestions, Boolean isActive, Double totalMarks) {
+        DateTime now = new DateTime();
+        this.name = name;
+        this.type = type;
+        this.totalQuestions = totalQuestions;
+        this.isActive = isActive;
+        this.totalMarks = totalMarks;
+        this.createdOn = now;
+        this.expiredOn = now.plusYears(1);
+    }
+
+    public Test(String name, TestType type, Long durations, Long totalQuestions, Boolean isActive, Double totalMarks) {
+        DateTime now = new DateTime();
+        this.name = name;
+        this.type = type;
+        this.durations = durations;
+        this.totalQuestions = totalQuestions;
+        this.isActive = isActive;
+        this.totalMarks = totalMarks;
+        this.createdOn = now;
+        this.expiredOn = now.plusYears(1);
+    }
+
+    public void addQuestion(Question question, Double correctMarks, Double wrongMarks) throws Exception {
+        Question question1 = Question.findQuestion(question.getQuestion());
+        if(question1==null)
+            throw new Exception("Question does not exist in database");
+
+        TestQuestions testQuestion = new TestQuestions(this, question, correctMarks, wrongMarks);
+        this.testQuestionses.add(testQuestion);
+        testQuestion.save();
+    }
+
+    public void save(){
+        super.save();
+        super.refresh();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public DateTime getCreatedOn() {
+        return createdOn;
+    }
+
+    public void setCreatedOn(DateTime createdOn) {
+        this.createdOn = createdOn;
+    }
+
+    public DateTime getExpiredOn() {
+        return expiredOn;
+    }
+
+    public void setExpiredOn(DateTime expiredOn) {
+        this.expiredOn = expiredOn;
+    }
+
+    public TestType getType() {
+        return type;
+    }
+
+    public void setType(TestType type) {
+        this.type = type;
+    }
+
+    public Long getTotalQuestions() {
+        return totalQuestions;
+    }
+
+    public void setTotalQuestions(Long totalQuestions) {
+        this.totalQuestions = totalQuestions;
+    }
+
+    public Boolean getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
+    }
+
+    public Double getTotalMarks() {
+        return totalMarks;
+    }
+
+    public void setTotalMarks(Double totalMarks) {
+        this.totalMarks = totalMarks;
+    }
+
+    public List<TestQuestions> getTestQuestionses() {
+        return testQuestionses;
+    }
+
+    public void setTestQuestionses(List<TestQuestions> testQuestionses) {
+        this.testQuestionses = testQuestionses;
+    }
+
+    public Long getDurations() {
+        return durations;
+    }
+
+    public void setDurations(Long durations) {
+        this.durations = durations;
+    }
+
+    public List<Result> getResults() {
+        return results;
+    }
+
+    public void setResults(List<Result> results) {
+        this.results = results;
+    }
 }

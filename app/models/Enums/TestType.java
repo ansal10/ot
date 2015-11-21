@@ -10,7 +10,7 @@ public enum TestType {
     SSC_CGL(3),
     IBS_PO(4);
 
-    public long getEventValue() {
+    public Long getEventValue() {
         return eventValue;
     }
 
@@ -18,5 +18,5 @@ public enum TestType {
         eventValue = eventType;
     }
 
-    public final long eventValue;
+    public final Long eventValue;
 }

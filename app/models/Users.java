@@ -42,7 +42,8 @@ public class Users extends Model {
     @Constraints.Email(message = "Not a valid Email")
     private String email;
 
-    public List<Test> tests ;
+    @OneToMany
+    public List<Result> results;
 
     @OneToMany
     public List<Permission> permissions;
@@ -86,6 +87,10 @@ public class Users extends Model {
         }else throw new Exception(USERNAME_PASSWORD_NOT_MATCHED);
     }
 
+    public void save(){
+        super.save();
+        super.refresh();
+    }
 
 
     public static final String USER_NOT_EXIST =  "User does not exist";
@@ -134,9 +139,9 @@ public class Users extends Model {
         return email;
     }
 
-    public List<Test> getTests() {
-        return tests;
-    }
+//    public List<Test> getTests() {
+//        return tests;
+//    }
 
     public List<Permission> getPermissions() {
         return permissions;
@@ -182,9 +187,9 @@ public class Users extends Model {
         this.email = email;
     }
 
-    public void setTests(List<Test> tests) {
-        this.tests = tests;
-    }
+//    public void setTests(List<Test> tests) {
+//        this.tests = tests;
+//    }
 
     public void setPermissions(List<Permission> permissions) {
         this.permissions = permissions;

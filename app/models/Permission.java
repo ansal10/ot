@@ -17,5 +17,10 @@ public class Permission extends Model {
 
     private String permission;
 
+    public void save(){
+        super.save();
+        super.refresh();
+    }
+
 
 }

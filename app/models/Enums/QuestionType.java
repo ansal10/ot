@@ -8,7 +8,7 @@ public enum QuestionType {
     MCQ(1),
     SUBJECTIVE(2);
 
-    public long getEventValue() {
+    public Long getEventValue() {
         return eventValue;
     }
 
@@ -16,5 +16,5 @@ public enum QuestionType {
         eventValue = eventType;
     }
 
-    public final long eventValue;
+    public final Long eventValue;
 }
