@@ -22,7 +22,7 @@ public class TestTest {
 
     String question1 = "what is answer of 1+2 ? ";
     String question2 = "what among these are true ? ";
-    Question q1,q2;
+    Question q1, q2;
     List<String> options1 = Arrays.asList("1", "2", "3", "4");
     List<String> options2 = Arrays.asList("sun is hot", "moon has light", "earth is 3rd planet","our is milkyway galaxy");
     Users u1,u2;
@@ -58,8 +58,7 @@ public class TestTest {
         u1.save();
         u2.save();
 
-        test = new models.Test("MCQ", TestType.AIEEE, (long)2, true, 10.0);
-        test.save();
+
     }
 
     @After
@@ -69,15 +68,45 @@ public class TestTest {
 
     @Test
     public void createTest(){
+        test = new models.Test("MCQ", TestType.AIEEE, (long)2, true, 10.0);
+        test.save();
         assertTrue(test.getId() != null);
     }
 
     @Test
     public void addQuestions() throws Exception {
+        test = new models.Test("MCQ", TestType.AIEEE, (long)2, true, 10.0);
+        test.save();
         test.addQuestion(q1, 5.0, 1.0);
         test.addQuestion(q2, 5.0, 2.0);
         assertEquals(test.getTestQuestionses().size(), 2);
         assertEquals(TestQuestions.find.all().size(), 2);
 
+    }
+
+    @Test
+    public void testAddExtraQuestion(){
+        test = new models.Test("MCQ", TestType.AIEEE, (long)1, true, 10.0);
+        test.save();
+        try {
+            test.addQuestion(q1, 5.0, 1.0);
+            test.addQuestion(q2, 5.0, 2.0);
+            throw new Exception("This Exception is not expected");
+        }catch (Exception e){
+            assertEquals(e.getMessage(), models.Test.ALREADY_DESIRED_NO_OF_QUESTION_EXIST);
+        }
+    }
+
+    @Test
+    public void testAddExtraMarksQuestion(){
+        test = new models.Test("MCQ", TestType.AIEEE, (long)2, true, 7.0);
+        test.save();
+        try {
+            test.addQuestion(q1, 5.0, 1.0);
+            test.addQuestion(q2, 5.0, 2.0);
+            throw new Exception("This Exception is not expected");
+        }catch (Exception e){
+            assertEquals(e.getMessage(), models.Test.ADDING_QUESTION_EXCEEDS_TOTAL_MARKS);
+        }
     }
 }

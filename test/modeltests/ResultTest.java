@@ -105,6 +105,7 @@ public class ResultTest {
 
             assertTrue(result.getCorrectAnswer() == 1);
             assertEquals(result.getCorrectMarks(), 5.0, .001);
+            assertTrue(result.getUnAttempted() == 1);
         }finally {
             result.delete();
         }

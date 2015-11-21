@@ -61,9 +61,23 @@ public class Test  extends Model {
     }
 
     public void addQuestion(Question question, Double correctMarks, Double wrongMarks) throws Exception {
-        Question question1 = Question.findQuestion(question.getQuestion());
-        if(question1==null)
-            throw new Exception("Question does not exist in database");
+
+        List<TestQuestions> existingQuestions = this.getTestQuestionses();
+        if(existingQuestions.size()==this.totalQuestions)
+            throw new Exception(ALREADY_DESIRED_NO_OF_QUESTION_EXIST);
+
+        Double totalMarksForExistingQuestions = 0.0;
+        for(TestQuestions testQuestion : existingQuestions)
+            totalMarksForExistingQuestions+=testQuestion.getCorrectAnswerMark();
+
+        if(totalMarksForExistingQuestions + correctMarks > this.totalMarks)
+            throw new Exception(ADDING_QUESTION_EXCEEDS_TOTAL_MARKS);
+
+
+
+        question = Question.findQuestion(question.getQuestion());
+        if(question==null)
+            throw new Exception(QUESTION_DOES_NOT_EXIST);
 
         TestQuestions testQuestion = new TestQuestions(this, question, correctMarks, wrongMarks);
         this.testQuestionses.add(testQuestion);
@@ -74,6 +88,14 @@ public class Test  extends Model {
         super.save();
         super.refresh();
     }
+
+
+
+
+
+    public static final String QUESTION_DOES_NOT_EXIST = "Question does not exist in database";
+    public static final String ALREADY_DESIRED_NO_OF_QUESTION_EXIST = "Already desired number of question exist for the test";
+    public static final String ADDING_QUESTION_EXCEEDS_TOTAL_MARKS = "Adding this question exceeds the total marks assigned for test";
 
     public Long getId() {
         return id;
