@@ -1,15 +1,17 @@
 package formstest;
 
 import controllers.ot.forms.SignupForm;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import play.data.Form;
-import play.data.validation.ValidationError;
 import play.test.FakeApplication;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
+import static play.test.Helpers.*;
 
 /**
  * Created by amd on 11/26/15.
@@ -19,17 +21,17 @@ public class SignupformTest {
     public FakeApplication fakeApplication;
 
 
-//    @Before
-//    public  void startFakeApplication(){
-//        fakeApplication = fakeApplication(inMemoryDatabase());
-//        start(fakeApplication);
-//
-//    }
-//
-//    @After
-//    public  void shutDownApplication(){
-//        stop(fakeApplication);
-//    }
+    @Before
+    public  void startFakeApplication(){
+        fakeApplication = fakeApplication(inMemoryDatabase());
+        start(fakeApplication);
+
+    }
+
+    @After
+    public  void shutDownApplication(){
+        stop(fakeApplication);
+    }
 
 
     @Test
@@ -42,9 +44,10 @@ public class SignupformTest {
         formData.put("email", "a@gmail.com");
         formData.put("firstName", "anas");
         formData.put("lastName", "md");
-        signupFormForm.bind(formData, "username", "password");
 
-        Assert.assertTrue(signupFormForm.hasErrors());
+        Form<SignupForm> boundSignupForm = signupFormForm.bind(formData);
+
+        Assert.assertTrue(boundSignupForm.hasErrors());
 
     }
 
@@ -53,15 +56,17 @@ public class SignupformTest {
         Form<SignupForm> signupFormForm = Form.form(SignupForm.class);
         Map<String, String> formData = new HashMap<String, String>();
         formData.put("username", "ansal10");
-        formData.put("password", "12345");
+        formData.put("password", "12345678");
         formData.put("confirmPassword", "123456789");
         formData.put("email", "a@gmail.com");
         formData.put("firstName", "anas");
         formData.put("lastName", "md");
-        signupFormForm.bind(formData, "username", "password");
-        List<ValidationError> errors = signupFormForm.globalErrors();
 
-        Assert.assertTrue(signupFormForm.hasErrors());
+        Form<SignupForm> boundSignupForm = signupFormForm.bind(formData);
+
+
+        Assert.assertTrue(boundSignupForm.hasErrors());
+        Assert.assertEquals(boundSignupForm.error("password").message(),  SignupForm.PASSWORD_MISMATCH );
     }
 
 
