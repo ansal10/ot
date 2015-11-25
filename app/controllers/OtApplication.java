@@ -1,13 +1,17 @@
 package controllers;
 
-import play.Logger;
+import controllers.ot.forms.LoginForm;
+import controllers.ot.forms.SignupForm;
+import play.data.Form;
+import play.data.validation.ValidationError;
+import play.filters.csrf.AddCSRFToken;
 import play.mvc.Controller;
 import play.mvc.Result;
-import views.html.index;
+import views.html.ot.ztheme.index;
+import views.html.ot.ztheme.login;
+import views.html.ot.ztheme.register;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
+import java.util.List;
 
 
 /**
@@ -15,18 +19,42 @@ import java.util.Scanner;
  */
 public class OtApplication extends Controller {
 
-    public Result index() {
-        String logKey = "Index : ";
-        Logger.debug("DEBUG STARTED SERVING");
-        Logger.info("INFO STARTED SERVICE");
-        Logger.warn("WARN STARTED SERVICE");
-        Logger.error("ERROR STARTED SERVICE");
+    public static Form<SignupForm> signupForm = Form.form(SignupForm.class);
+    public static Form<LoginForm> loginForm = Form.form(LoginForm.class);
 
-        try{
-            new Scanner(new File("wqoihdwq"));
-        } catch (FileNotFoundException e) {
-            Logger.error(String.format("Exception %s", e.getMessage()));
-        }
+    public Result index() {
         return ok(index.render("Hello world"));
+    }
+
+    @AddCSRFToken
+    public Result register(){
+        return ok(register.render(signupForm));
+    }
+
+    public Result login(){
+        return ok(login.render(loginForm));
+    }
+
+    public Result registerPost(){
+        Form<SignupForm> boundSignupForm = signupForm.bindFromRequest();
+
+        if(boundSignupForm.hasErrors()){
+            return badRequest(register.render(boundSignupForm));
+        }else {
+            SignupForm formData = boundSignupForm.get();
+            redirect(routes.OtApplication.index());
+        }
+        return null;
+    }
+
+    public Result loginPost(){
+        Form<LoginForm> boundLoginForm = loginForm.bindFromRequest();
+        if(boundLoginForm.hasErrors()){
+            return badRequest(login.render(boundLoginForm));
+        }else {
+            LoginForm formData = boundLoginForm.get();
+            redirect(routes.OtApplication.index());
+        }
+        return null;
     }
 }

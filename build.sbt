@@ -12,7 +12,8 @@ libraryDependencies ++= Seq(
   javaWs,
   evolutions,
   "org.postgresql" % "postgresql" % "9.4-1201-jdbc41",
-  "joda-time" % "joda-time" % "2.9.1"
+  "joda-time" % "joda-time" % "2.9.1",
+  filters
 )
 
 // Play provides two styles of routers, one expects its actions to be injected, the
