@@ -1,5 +1,7 @@
 package modeltests;
 
+import models.ot.Enums.PermissionType;
+import models.ot.Permission;
 import models.ot.Users;
 import org.joda.time.DateTime;
 import org.junit.After;
@@ -7,6 +9,8 @@ import org.junit.Before;
 import org.junit.Test;
 import play.test.FakeApplication;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static play.test.Helpers.*;
 
@@ -43,6 +47,8 @@ public class UsersTest {
         assertTrue(u1.exist());
         assertTrue(u2.exist());
         assertTrue(!u3.exist());
+        assertEquals(u1.getResults().size(), 0);
+        assertEquals(u1.getPermissions().size(), 0);
 
     }
 
@@ -85,6 +91,27 @@ public class UsersTest {
         }catch (Exception e){
             e.printStackTrace();
         }
+
+    }
+
+    @Test
+    public void testPermissions(){
+        PermissionType p1 = PermissionType.CAN_ADD_QUESTIONS;
+        PermissionType p2 = PermissionType.CAN_CREATE_RANDOM_TEST;
+        PermissionType p3 = PermissionType.CAN_GIVE_TEST;
+        PermissionType p4 = PermissionType.CAN_RESET_TEST;
+
+        u1.addPermission(p1);
+        u1.addPermission(p2);
+        u1.addPermission(p3);
+        u2.addPermission(p3);
+        u2.addPermission(p4);
+
+
+        assertEquals(Permission.find.all().size(), 5);
+        assertEquals(u1.getPermissions().size(), 3);
+        assertTrue(u1.isPermitted(p1));
+        assertFalse(u2.isPermitted(p1));
 
     }
 }

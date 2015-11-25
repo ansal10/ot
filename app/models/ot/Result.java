@@ -21,7 +21,7 @@ public class Result extends Model {
     private Long id;
 
     @ManyToOne
-    private Users user;
+    private Users users;
 
     @ManyToOne
     private Test test;
@@ -41,7 +41,7 @@ public class Result extends Model {
 
     public Result(Users user, Test test){
         DateTime now = new DateTime();
-        this.user = user;
+        this.users = user;
         this.test = test;
         this.startedOn=now;
         this.endsOn = now.plusSeconds(test.getDurations().intValue());
@@ -143,12 +143,12 @@ public class Result extends Model {
         this.id = id;
     }
 
-    public Users getUser() {
-        return user;
+    public Users getUsers() {
+        return users;
     }
 
-    public void setUser(Users user) {
-        this.user = user;
+    public void setUsers(Users user) {
+        this.users = user;
     }
 
     public Test getTest() {

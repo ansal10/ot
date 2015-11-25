@@ -3,7 +3,7 @@ package controllers;
 import play.Logger;
 import play.mvc.Controller;
 import play.mvc.Result;
-import views.html.ot.ztheme.index;
+import views.html.index;
 
 import java.io.File;
 import java.io.FileNotFoundException;

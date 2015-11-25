@@ -3,6 +3,7 @@ package models.ot;
 import com.avaje.ebean.Expr;
 import com.avaje.ebean.Model;
 import com.google.common.hash.Hashing;
+import models.ot.Enums.PermissionType;
 import org.apache.commons.codec.Charsets;
 import org.joda.time.DateTime;
 import play.data.validation.Constraints;
@@ -90,6 +91,25 @@ public class Users extends Model {
     public void save(){
         super.save();
         super.refresh();
+    }
+
+    public void addPermission(PermissionType permission){
+
+        List<Permission> permissionList = this.getPermissions();
+        if(permissionList.contains(new Permission(null, permission)))
+            return;
+        Permission permissions = new Permission(this, permission);
+        permissions.save();
+        this.refresh();
+    }
+
+    public boolean isPermitted(PermissionType permission){
+
+
+        Permission perm = Permission.find.where().eq("users_id",String.valueOf(this.getId()))
+                .eq("permission", permission).findUnique();
+        return perm != null;
+
     }
 
 
@@ -201,5 +221,13 @@ public class Users extends Model {
 
     public boolean isSuperUser(){
         return this.getSuperUser();
+    }
+
+    public List<Result> getResults() {
+        return results;
+    }
+
+    public void setResults(List<Result> results) {
+        this.results = results;
     }
 }
