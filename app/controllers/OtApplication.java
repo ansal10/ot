@@ -35,7 +35,7 @@ public class OtApplication extends Controller {
         return ok(login.render(loginForm));
     }
 
-    public Result registerPost(){
+    public Result registerPOST(){
         Form<SignupForm> boundSignupForm = signupForm.bindFromRequest();
 
         if(boundSignupForm.hasErrors()){
@@ -47,7 +47,7 @@ public class OtApplication extends Controller {
         return null;
     }
 
-    public Result loginPost(){
+    public Result loginPOST(){
         Form<LoginForm> boundLoginForm = loginForm.bindFromRequest();
         if(boundLoginForm.hasErrors()){
             return badRequest(login.render(boundLoginForm));
