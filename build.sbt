@@ -13,7 +13,8 @@ libraryDependencies ++= Seq(
   evolutions,
   "org.postgresql" % "postgresql" % "9.4-1201-jdbc41",
   "joda-time" % "joda-time" % "2.9.1",
-  filters
+  filters,
+  "javax.mail" % "mail" % "1.5.0-b01"
 )
 
 // Play provides two styles of routers, one expects its actions to be injected, the

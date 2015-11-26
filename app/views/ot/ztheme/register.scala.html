@@ -54,6 +54,8 @@
                     </div>
                 </div>
             </div>
+
+            @helpers.flashbar()
                 <!--SECTION -->
                 <!--===============================================================-->
             <div class="section section-xs section-bottom">
@@ -91,11 +93,11 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="first-name">First Name</label>
-                                            @helper.inputText(registerForm("lastName"),'label->"", 'id->"first-name", 'placeholder->"First Name", 'class->"form-control")
+                                            @helper.inputText(registerForm("firstName"),'label->"", 'id->"first-name", 'placeholder->"First Name", 'class->"form-control")
                                         </div>
                                         <div class="form-group">
                                             <label for="last-name">Last Name</label>
-                                            @helper.inputText(registerForm("firstName"),'label->"", 'id->"last-name", 'placeholder->"Last Name", 'class->"form-control")
+                                            @helper.inputText(registerForm("lastName"),'label->"", 'id->"last-name", 'placeholder->"Last Name", 'class->"form-control")
                                         </div>
                                         <div class="form-group">
                                             <label for="inputEmail">Email</label>
@@ -119,8 +121,12 @@
                                     }
                                 </div>
                             </div>
-                            Already Registered ?
-                            <a href="@routes.OtApplication.login()"> Goto Login </a>
+                            <span style="float: left">
+                                Already Registered ? <a href="@routes.OtApplication.login()"> Login </a>
+                            </span>
+                            <span style="float: right">
+                                Forgot Password ? <a href="@routes.OtApplication.forgotPassword()"> Request Password </a>
+                            </span>
                         </div>
                     </div>
                 </div>

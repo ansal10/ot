@@ -53,8 +53,8 @@ public class TestTest {
                 option.save();
             }
         }
-        u1 = new Users("anas", "pass", "a@gmail.com", true, false);
-        u2 = new Users("anas2","pass","a@hotmail.com", false, false);
+        u1 = new Users("anas", "pass", "a@gmail.com", "fname", "lname",true, false);
+        u2 = new Users("anas2","pass","a@hotmail.com","fname", "lname", false, false);
         u1.save();
         u2.save();
 

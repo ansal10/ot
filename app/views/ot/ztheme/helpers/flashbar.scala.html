@@ -1,0 +1,16 @@
+
+<div class="col-md-8 col-sm-offset-2">
+    @if(flash.contains("success")){
+        <div class="alert alert-success alert-dismissable fade in">
+            <strong>Success ! </strong> @flash.get("success")
+            <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
+        </div>
+    }
+    @if(flash.contains("error")){
+        <div class="alert alert-danger alert-dismissable fade in">
+            <strong>Error ! </strong> @flash.get("error")
+            <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
+        </div>
+    }
+
+</div>

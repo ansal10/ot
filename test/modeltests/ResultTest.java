@@ -1,15 +1,19 @@
 package modeltests;
 
-import models.ot.*;
 import models.ot.Enums.TestType;
-import org.junit.*;
-import org.junit.Test;
+import models.ot.Option;
+import models.ot.Question;
+import models.ot.Result;
+import models.ot.Users;
+import org.junit.After;
+import org.junit.Before;
 import play.test.FakeApplication;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static play.test.Helpers.*;
 
 public class ResultTest {
@@ -54,8 +58,8 @@ public class ResultTest {
         test = new models.ot.Test("MCQ", TestType.AIEEE, (long)120,  (long)2, true, 10.0);
         test.save();
 
-        u1 = new Users("anas", "pass", "a@gmail.com", true, false);
-        u2 = new Users("anas2","pass","a@hotmail.com", false, false);
+        u1 = new Users("anas", "pass", "a@gmail.com", "fname", "lname",true, false);
+        u2 = new Users("anas2","pass","a@hotmail.com","fname", "lname", false, false);
         u1.save();
         u2.save();
 

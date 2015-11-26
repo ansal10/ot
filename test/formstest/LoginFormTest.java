@@ -26,8 +26,8 @@ public class LoginFormTest {
     public  void startFakeApplication(){
         fakeApplication = fakeApplication(inMemoryDatabase());
         start(fakeApplication);
-        Users u1 = new Users("anas", "1234","a@a.com",true,false);
-        Users u2 = new Users("anas2", "1234","a2@a.com",false,false);
+        Users u1 = new Users("anas", "1234","a@a.com", "fname", "lname",true,false);
+        Users u2 = new Users("anas2", "1234","a2@a.com","fname", "lname",false,false);
         u1.save();
         u2.save();
 

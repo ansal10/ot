@@ -9,9 +9,11 @@ import org.junit.Before;
 import org.junit.Test;
 import play.test.FakeApplication;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+
+import static org.junit.Assert.*;
 import static play.test.Helpers.*;
 
 /**
@@ -27,11 +29,11 @@ public class UsersTest {
 
         fakeApplication = fakeApplication(inMemoryDatabase());
         start(fakeApplication);
-        u1 = new Users("anas", "pass", "a@gmail.com", true, false);
-        u2 = new Users("anas2","pass","a@hotmail.com", false, false);
+        u1 = new Users("anas", "pass", "a@gmail.com", "fname", "lname", true, false);
+        u2 = new Users("anas2","pass","a@hotmail.com","fname", "lname", false, false);
         u1.save();
         u2.save();
-        u3 = new Users("anas3", "pass", "a3@gmail.com", true, true);
+        u3 = new Users("anas3", "pass", "a3@gmail.com","fname", "lname", true, true);
     }
 
     @After
@@ -113,5 +115,55 @@ public class UsersTest {
         assertTrue(u1.isPermitted(p1));
         assertFalse(u2.isPermitted(p1));
 
+    }
+
+    @Test
+    public void testTokengeneration() throws NoSuchAlgorithmException, NoSuchProviderException, UnsupportedEncodingException {
+        String token1 = u1.createToken();
+        String token2 = u1.createToken();
+        assertNotEquals(token1, token2);
+    }
+
+    @Test
+    public void testActivateByToken() throws Exception {
+        assertTrue(!u2.isActive());
+        String token = u2.getToken();
+        System.out.println(token);
+        assertEquals(token.length(), 256);
+        Users.activate(token);
+        u2.refresh();
+        assertTrue(u2.isActive());
+
+    }
+
+    @Test
+    public void testActivateWithInvalidToken(){
+        try {
+            Users.activate("e2e32e23e23");
+            assertTrue(false);
+        }catch (Exception e){
+            assertEquals(e.getMessage(), Users.TOKEN_NOT_EXIST);
+        }
+    }
+
+    @Test
+    public void testActivateWithExpiredToken(){
+        try {
+            String token = u2.getToken();
+            u2.setTokenExpiredOn(DateTime.now().minusMinutes(10));
+            u2.save();
+            Users.activate(token);
+            assertTrue(false);
+        }catch (Exception e){
+            assertEquals(e.getMessage(), Users.TOKEN_EXPIRED);
+        }
+    }
+
+    @Test
+    public void testPasswordReset() throws Exception {
+        String token = u2.getToken();
+        Users.resetPassword(token, "newpass");
+        u2.refresh();
+        assertTrue(Users.authenticate(u2.getUsername(), "newpass"));
     }
 }
