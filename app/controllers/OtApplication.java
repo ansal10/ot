@@ -98,7 +98,7 @@ public class OtApplication extends Controller {
                     .eq("email", boundPasswordRequestForm.get().getEmail())
                     .eq("first_name", boundPasswordRequestForm.get().getFirstName()).findUnique();
             users.resetToken();
-                if(Emailer.getInstance().sendResetPasswordMail(users.getEmail(), users.getToken())) {
+                if(!Emailer.getInstance().sendResetPasswordMail(users.getEmail(), users.getToken())) {
                     flash(ERROR_KEY, "Password Reset failed, Try Again");
                     return badRequest(forgot_password.render(passwordRequestForm));
                 }else {
@@ -107,7 +107,7 @@ public class OtApplication extends Controller {
                 }
         }
     }
-
+ 
     @RequireCSRFCheck
     public Result resetPasswordPOST(){
         Form<PasswordResetForm> boundPasswordResetForm = passwordResetForm.bindFromRequest();
