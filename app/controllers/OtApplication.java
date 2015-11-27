@@ -1,14 +1,19 @@
 package controllers;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import controllers.ot.dbdata.DataFiller;
 import controllers.ot.emailer.Emailer;
 import controllers.ot.forms.LoginForm;
 import controllers.ot.forms.PasswordRequestForm;
 import controllers.ot.forms.PasswordResetForm;
 import controllers.ot.forms.SignupForm;
+import controllers.ot.mapper.NewQuestionRequestMapper;
 import models.ot.Users;
 import play.data.Form;
 import play.filters.csrf.AddCSRFToken;
 import play.filters.csrf.RequireCSRFCheck;
+import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 import views.html.ot.ztheme.*;
@@ -27,10 +32,13 @@ public class OtApplication extends Controller {
     public static Form<PasswordResetForm> passwordResetForm = Form.form(PasswordResetForm.class);
     public static Form<PasswordRequestForm> passwordRequestForm = Form.form(PasswordRequestForm.class);
 
+    public static final String NEW_QUESTION_KEY = "mQENBFZX3IgBCACR4ASPOUZO46OrGsCHVOrH5pgrIGyWeKoel5OdrMNS40HV";
+
     public static String ERROR_KEY = "error";
     public static String SUCCESS_KEY = "success";
 
     public Result index() {
+        new DataFiller();
         return ok(index.render("Hello world"));
     }
 
@@ -134,5 +142,37 @@ public class OtApplication extends Controller {
             flash(ERROR_KEY, e.getMessage());
             return ok(login.render(loginForm));
         }
+    }
+
+    public Result newQuestion(){
+        return  ok(new_question.render(NEW_QUESTION_KEY));
+    }
+
+    public Result newQuestionPOST(){
+        NewQuestionRequestMapper requestMapper = new NewQuestionRequestMapper().parseFromJSON(request().body().asJson());
+        ObjectNode result = Json.newObject();
+
+        if(requestMapper == null){
+            result.putArray(ERROR_KEY).add("Internal Error Occurred! ");
+            return badRequest(result);
+        }
+
+        if (requestMapper.hasErrors()){
+            result.put("message", "Failure");
+            ArrayNode arrayNode = result.putArray(ERROR_KEY);
+            for(String errors:requestMapper.getErrors())
+                arrayNode.add(errors);
+            return badRequest(result);
+
+        }else {
+            if(!requestMapper.saveToDB()) {
+                result.putArray(ERROR_KEY).add("Internal Error Occurred! ");
+                return badRequest(result);
+            }else {
+                result.putArray(SUCCESS_KEY).add("Question submitted successfully");
+                return ok(result);
+            }
+        }
+
     }
 }

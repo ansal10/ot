@@ -21,5 +21,8 @@ POST        /reset_password         controllers.OtApplication.resetPasswordPOST(
 
 GET         /activate               controllers.OtApplication.activate(token: String?="")
 
+GET         /new_question           controllers.OtApplication.newQuestion()
+POST        /new_question           controllers.OtApplication.newQuestionPOST()
+
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file           controllers.Assets.versioned(path="/public", file: Asset)

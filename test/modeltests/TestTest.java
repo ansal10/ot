@@ -1,5 +1,7 @@
 package modeltests;
 
+import models.ot.Enums.DifficultyType;
+import models.ot.Enums.QuestionType;
 import models.ot.Enums.TestType;
 import models.ot.Option;
 import models.ot.Question;
@@ -32,7 +34,7 @@ public class TestTest {
     public void setUp() throws Exception {
         fakeApplication = fakeApplication(inMemoryDatabase());
         start(fakeApplication);
-        q1 = new Question(question1);
+        q1 = new Question(question1, DifficultyType.AVERAGE, QuestionType.APTITUDE);
         q1.save();
 
         for(String o : options1){
@@ -41,7 +43,7 @@ public class TestTest {
             else q1.addOption(o, false);
         }
 
-        q2 = new Question(question2);
+        q2 = new Question(question2, DifficultyType.AVERAGE, QuestionType.APTITUDE);
         q2.save();
 
         for(String o:options2){
