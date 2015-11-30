@@ -53,6 +53,7 @@ public class PostQuestionTest {
 
         JsonNode jsonNode = new ObjectMapper().readTree(rawJson);
         Http.RequestBuilder fakeRequest = fakeRequest(POST, "/new_question").bodyJson(jsonNode);
+        fakeRequest.session("username", "ansal10");
         Result result = route(fakeRequest);
         String body = new String(JavaResultExtractor.getBody(result, 0L));
         assertTrue(body.contains("success"));
@@ -72,6 +73,7 @@ public class PostQuestionTest {
 
         JsonNode jsonNode = new ObjectMapper().readTree(rawJson);
         Http.RequestBuilder fakeRequest = fakeRequest(POST, "/new_question").bodyJson(jsonNode);
+        fakeRequest.session("username", "ansal10");
         Result result = route(fakeRequest);
         String body = new String(JavaResultExtractor.getBody(result, 0L));
         assertTrue(body.contains("error"));
@@ -90,6 +92,7 @@ public class PostQuestionTest {
 
         JsonNode jsonNode = new ObjectMapper().readTree(rawJson);
         Http.RequestBuilder fakeRequest = fakeRequest(POST, "/new_question").bodyJson(jsonNode);
+        fakeRequest.session("username", "ansal10");
         Result result = route(fakeRequest);
         String body = new String(JavaResultExtractor.getBody(result, 0L));
         assertTrue(body.contains("error"));
@@ -107,6 +110,7 @@ public class PostQuestionTest {
 
         JsonNode jsonNode = new ObjectMapper().readTree(rawJson);
         Http.RequestBuilder fakeRequest = fakeRequest(POST, "/new_question").bodyJson(jsonNode);
+        fakeRequest.session("username", "ansal10");
         Result result = route(fakeRequest);
         String body = new String(JavaResultExtractor.getBody(result, 0L));
         assertTrue(!body.contains("success"));
@@ -123,6 +127,7 @@ public class PostQuestionTest {
 
         JsonNode jsonNode = new ObjectMapper().readTree(rawJson);
         Http.RequestBuilder fakeRequest = fakeRequest(POST, "/new_question").bodyJson(jsonNode);
+        fakeRequest.session("username", "ansal10");
         Result result = route(fakeRequest);
         String body = new String(JavaResultExtractor.getBody(result, 0L));
         assertTrue(!body.contains("success"));

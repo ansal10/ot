@@ -166,4 +166,13 @@ public class UsersTest {
         u2.refresh();
         assertTrue(Users.authenticate(u2.getUsername(), "newpass"));
     }
+
+    @Test
+    public void testfindUserbyUsername(){
+        Users users1 = Users.findUserByUsername(u1.getUsername());
+        Users users2 = Users.findUserByUsername(u2.getUsername());
+
+        assertNotNull(users1);
+        assertNull(users2);
+    }
 }

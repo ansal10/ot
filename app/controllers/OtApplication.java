@@ -9,6 +9,7 @@ import controllers.ot.forms.PasswordRequestForm;
 import controllers.ot.forms.PasswordResetForm;
 import controllers.ot.forms.SignupForm;
 import controllers.ot.mapper.NewQuestionRequestMapper;
+import controllers.ot.security.Secured;
 import models.ot.Users;
 import play.data.Form;
 import play.filters.csrf.AddCSRFToken;
@@ -16,6 +17,7 @@ import play.filters.csrf.RequireCSRFCheck;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.mvc.Security;
 import views.html.ot.ztheme.*;
 
 import java.util.HashMap;
@@ -39,7 +41,8 @@ public class OtApplication extends Controller {
 
     public Result index() {
         new DataFiller();
-        return ok(index.render("Hello world"));
+        Users users = Users.findUserByUsername(session().getOrDefault("username", null));
+        return ok(index.render("Hello world", users));
     }
 
     @AddCSRFToken
@@ -92,7 +95,16 @@ public class OtApplication extends Controller {
             return badRequest(login.render(boundLoginForm));
         }else {
             LoginForm formData = boundLoginForm.get();
-            return ok(index.render("Hello World"));
+            Users users = Users.findUserByUsername(formData.getUsername());
+            if(users == null) {
+                flash(ERROR_KEY, "Login credentials does not match or user is inactive");
+                return badRequest(login.render(loginForm));
+            }else {
+                session().clear();
+                session("username", users.getUsername());
+                flash(SUCCESS_KEY, "Login Successfull");
+                return ok(index.render("Hello World", users));
+            }
         }
     }
 
@@ -144,10 +156,19 @@ public class OtApplication extends Controller {
         }
     }
 
+
+    @Security.Authenticated(Secured.class)
     public Result newQuestion(){
+        Users users = Users.findUserByUsername(session().get("username"));
+        if(users == null){
+            flash(ERROR_KEY, "Login session failed! Pleasy retry login");
+            return badRequest(login.render(loginForm));
+        }
         return  ok(new_question.render(NEW_QUESTION_KEY));
     }
 
+
+    @Security.Authenticated(Secured.class)
     public Result newQuestionPOST(){
         NewQuestionRequestMapper requestMapper = new NewQuestionRequestMapper().parseFromJSON(request().body().asJson());
         ObjectNode result = Json.newObject();
@@ -173,6 +194,11 @@ public class OtApplication extends Controller {
                 return ok(result);
             }
         }
+    }
 
+    public Result logout(){
+        session().clear();
+        flash(SUCCESS_KEY, "Logout successfully");
+        return ok(index.render("Hello", null));
     }
 }

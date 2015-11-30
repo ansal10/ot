@@ -1,4 +1,4 @@
-@(message:String)
+@(message:String, user:models.ot.Users)
 <!DOCTYPE html>
 <html lang="en">
 
@@ -37,7 +37,7 @@
 
                 <!-- NAVBAR -->
                 <!--===============================================================-->
-                 @helpers.navbar()
+                 @helpers.navbar(user)
                 <!-- NAVBAR END -->
 
                 <!-- SECTION INTRO SLIDER -->
@@ -107,6 +107,9 @@
                     <i class="fa fa-angle-right fa-2x btn-next-intro"></i>
                 </a>
             </div>
+
+
+                @helpers.flashbar()
 
                 <!-- SEECTION FEATURES -->
                 <!--===============================================================-->

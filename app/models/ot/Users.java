@@ -161,6 +161,10 @@ public class Users extends Model {
         return true;
     }
 
+    public static Users findUserByUsername(String username){
+        return Users.find.where().eq("username", username).eq("active",true).findUnique();
+    }
+
     public static final String USER_NOT_EXIST =  "User does not exist";
     public static final String USER_NOT_ACTIVE =  "User is not active";
     public static final String PASSWORD_EXPIRED = "Password expired";
@@ -208,10 +212,6 @@ public class Users extends Model {
     public String getEmail() {
         return email;
     }
-
-//    public List<Test> getTests() {
-//        return tests;
-//    }
 
     public List<Permission> getPermissions() {
         return permissions;

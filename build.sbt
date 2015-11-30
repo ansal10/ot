@@ -14,7 +14,11 @@ libraryDependencies ++= Seq(
   "org.postgresql" % "postgresql" % "9.4-1201-jdbc41",
   "joda-time" % "joda-time" % "2.9.1",
   filters,
-  "javax.mail" % "mail" % "1.5.0-b01"
+  "javax.mail" % "mail" % "1.5.0-b01",
+  "org.mockito" % "mockito-all" % "2.0.2-beta",
+  "org.powermock" % "powermock-api-mockito" % "1.6.3",
+  "org.powermock" % "powermock-module-junit4" % "1.6.3"
+
 )
 
 // Play provides two styles of routers, one expects its actions to be injected, the
