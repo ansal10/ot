@@ -5,12 +5,12 @@ package models.ot.Enums;
  */
 
 public enum DifficultyType {
-    VERY_EASY(1),
-    EASY(2),
-    AVERAGE(3),
-    HARD(4),
-    VERY_HARD(5),
-    EXTREME_HARD(6);
+    VERY_EASY(0),
+    EASY(1),
+    AVERAGE(2),
+    HARD(3),
+    VERY_HARD(4),
+    EXTREME_HARD(5);
 
 
     public Long getEventValue() {

@@ -124,7 +124,7 @@ public class Users extends Model {
     public boolean isPermitted(PermissionType permission){
 
 
-        Permission perm = Permission.find.where().eq("users_id",String.valueOf(this.getId()))
+        Permission perm = Permission.find.where().eq("users_id",this.getId())
                 .eq("permission", permission).findUnique();
         return perm != null;
 

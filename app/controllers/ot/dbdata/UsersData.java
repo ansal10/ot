@@ -1,5 +1,6 @@
 package controllers.ot.dbdata;
 
+import models.ot.Enums.PermissionType;
 import models.ot.Users;
 
 /**
@@ -13,6 +14,7 @@ public class UsersData {
             users.save();
             String token = users.getToken();
             Users.activate(token);
+            users.addPermission(PermissionType.CAN_ADD_QUESTIONS);
         }
     }
 }

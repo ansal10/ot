@@ -10,6 +10,7 @@ import controllers.ot.forms.PasswordResetForm;
 import controllers.ot.forms.SignupForm;
 import controllers.ot.mapper.NewQuestionRequestMapper;
 import controllers.ot.security.Secured;
+import models.ot.Enums.PermissionType;
 import models.ot.Users;
 import play.data.Form;
 import play.filters.csrf.AddCSRFToken;
@@ -160,16 +161,16 @@ public class OtApplication extends Controller {
     @Security.Authenticated(Secured.class)
     public Result newQuestion(){
         Users users = Users.findUserByUsername(session().get("username"));
-        if(users == null){
-            flash(ERROR_KEY, "Login session failed! Pleasy retry login");
-            return badRequest(login.render(loginForm));
-        }
-        return  ok(new_question.render(NEW_QUESTION_KEY));
+        if(users == null)loginFailedState();
+        return  ok(new_question.render(NEW_QUESTION_KEY, users));
     }
 
 
     @Security.Authenticated(Secured.class)
     public Result newQuestionPOST(){
+        Users user = Users.findUserByUsername(session().get("username"));
+        if(user == null) return loginFailedState();
+        if(!user.isPermitted(PermissionType.CAN_ADD_QUESTIONS)) return unAuthenticatedRequset();
         NewQuestionRequestMapper requestMapper = new NewQuestionRequestMapper().parseFromJSON(request().body().asJson());
         ObjectNode result = Json.newObject();
 
@@ -200,5 +201,15 @@ public class OtApplication extends Controller {
         session().clear();
         flash(SUCCESS_KEY, "Logout successfully");
         return ok(index.render("Hello", null));
+    }
+
+    public Result loginFailedState(){
+        flash(ERROR_KEY, "Login session failed! Pleasy retry login");
+        return badRequest(login.render(loginForm));
+    }
+
+    public Result unAuthenticatedRequset(){
+        flash(ERROR_KEY, "You are unauthorized to view the page your requested! Try with other User");
+        return badRequest(login.render(loginForm));
     }
 }

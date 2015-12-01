@@ -1,4 +1,4 @@
-@(key:String)
+@(key:String, user:models.ot.Users)
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -25,10 +25,10 @@
                                             <![endif]-->
     </head>
     <body class="body-nav-fixed-menu-top">
-        <div class="wrapper-body" ng-app="otApp" ng-controller="QuestionController">
+        <div class="wrapper-body" ng-app="otApp" ng-controller="QuestionSubmitController">
                 <!-- NAVBAR -->
                 <!--===============================================================-->
-
+            @helpers.navbar(user)
                 <!-- NAVBAR END -->
                 <!-- SECTION HEADING -->
                 <!--===============================================================-->
@@ -51,7 +51,7 @@
             </div>
 
 
-
+            <!-- Flash and ajax error and success message -->
 
             <div class="col-md-8 col-sm-offset-2" >
 
@@ -79,7 +79,7 @@
                                 <div class="panel-heading">
                                     <h3 class="panel-title">New Question</h3>
                                 </div>
-                                <div class="panel-body">
+                                <div class="panel-body" style="background: antiquewhite">
                                     <div class="form-group">
                                         <label for="question">Question:</label>
                                         <textarea class="form-control" rows="5" id="question" ng-model="question"></textarea>
@@ -169,7 +169,7 @@
         <script>
             var app = angular.module('otApp',[]);
 
-            app.controller('QuestionController', function ( $scope, $http ) {
+            app.controller('QuestionSubmitController', function ( $scope, $http ) {
 
                 $scope.success = [];
                 $scope.errors = [];

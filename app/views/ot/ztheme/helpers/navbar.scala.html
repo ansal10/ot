@@ -1,4 +1,5 @@
 @(user:models.ot.Users)
+@import models.ot.Enums.PermissionType
 <div id="header">
     <nav id="nav" class="navbar navbar-default navbar-fixed-top">
         <div class="menu-top menu-top-inverse">
@@ -180,8 +181,10 @@
                                 <a href="#" class="dropdown-toggle fa fa-user" data-toggle="dropdown" role="button" aria-expanded="false">@user.getUsername</a>
                                 <ul class="dropdown-menu dropdown-menu-right" role="menu">
                                     <li><a href="@routes.OtApplication.index()">All Tests</a></li>
+                                    @if(user.isPermitted(PermissionType.CAN_ADD_QUESTIONS)) {
+                                        <li><a href="@routes.OtApplication.newQuestion()">Add Question</a></li>
+                                    }
                                     <li><a href="@routes.OtApplication.logout()">Logout</a></li>
-                                    <li><a href="#">Shop Item</a></li>
                                     <li><a href="#">Shop Cart</a></li>
                                 </ul>
                             </li>

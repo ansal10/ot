@@ -5,10 +5,10 @@ package models.ot.Enums;
  */
 
 public enum TestType {
-    MATHS(1),
-    AIEEE(2),
-    SSC_CGL(3),
-    IBS_PO(4);
+    MATHS(0),
+    AIEEE(1),
+    SSC_CGL(2),
+    IBS_PO(3);
 
     public Long getEventValue() {
         return eventValue;
