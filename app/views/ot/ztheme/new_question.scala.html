@@ -25,7 +25,7 @@
                                             <![endif]-->
     </head>
     <body class="body-nav-fixed-menu-top">
-        <div class="wrapper-body" ng-app="otApp" ng-controller="QuestionSubmitController">
+        <div class="wrapper-body" ng-app="otApp" >
                 <!-- NAVBAR -->
                 <!--===============================================================-->
             @helpers.navbar(user)
@@ -53,7 +53,7 @@
 
             <!-- Flash and ajax error and success message -->
 
-            <div class="col-md-8 col-sm-offset-2" >
+            <div class="col-md-8 col-sm-offset-2" ng-controller="ResponseController" >
 
                 <div class="alert alert-success alert-dismissable fade in" ng-repeat="s in success">
                     <strong>Success ! </strong> {{ s }}
@@ -65,90 +65,146 @@
                     <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
                 </div>
 
-
             </div>
                 <!-- SECTION -->
                 <!--===============================================================-->
-            <div class="section section-xs section-bottom">
-                <div class="container">
-                    <div class="row mb">
 
-                        <div class="col-md-8 col-md-offset-2">
-                            <h3 class="title-md hr-left text-theme">Add New Question</h3>
-                            <div class="panel panel-primary text-theme" >
-                                <div class="panel-heading">
-                                    <h3 class="panel-title">New Question</h3>
-                                </div>
-                                <div class="panel-body" style="background: antiquewhite">
-                                    <div class="form-group">
-                                        <label for="question">Question:</label>
-                                        <textarea class="form-control" rows="5" id="question" ng-model="question"></textarea>
-                                    </div>
 
-                                    <div ng-repeat="item in items">
-                                        <div class="form-group">
-                                            <div class="row">
-                                                <div class="col-sm-1">
-                                                    <label for="question"> <h3>{{ item.index }}.</h3></label>
+            <!-- NAV BAR TAB -->
+            <div class="row">
+                <div class="col-md-8 col-md-offset-2">
+                    <div class="row-code">
+                    <div class="row row-tabs" role="tabpanel">
+                        <div class="col-xs-12">
+
+                            <div class="tabs-top tabs-justified-top">
+                                <ul class="nav nav-tabs nav-justified" role="tablist">
+                                    <li role="presentation" class="active">
+                                        <a href="#newQuestionTab" aria-controls="home-3" role="tab" data-toggle="tab" class="title-md">Add new Question</a>
+                                    </li>
+                                    <li role="presentation">
+                                        <a href="#allQuestionTab" aria-controls="profile-3" role="tab" data-toggle="tab" class="title-md">List All Question</a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content">
+
+                                    <!-- NEW QUESTION FORM -->
+
+                                    <div role="tabpanel" class="tab-pane fade in active" id="newQuestionTab" ng-controller="QuestionSubmitController">
+                                        <div class="panel panel-primary text-theme" >
+                                            <div class="panel-heading">
+                                                <h3 class="panel-title">New Question</h3>
+                                            </div>
+                                            <div class="panel-body" style="background: antiquewhite">
+                                                <div class="form-group">
+                                                    <label for="question">Question:</label>
+                                                    <textarea class="form-control" rows="5" id="question" ng-model="question"></textarea>
                                                 </div>
 
-                                                <div class="col-sm-9">
-                                                    <textarea class="form-control" rows="2"  ng-model="items[$index].value">{{ item.value }}</textarea>
+                                                <div ng-repeat="item in items">
+                                                    <div class="form-group">
+                                                        <div class="row">
+                                                            <div class="col-sm-1">
+                                                                <label for="question"> <h3>{{ item.index }}.</h3></label>
+                                                            </div>
+
+                                                            <div class="col-sm-9">
+                                                                <textarea class="form-control" rows="2"  ng-model="items[$index].value">{{ item.value }}</textarea>
+                                                            </div>
+
+                                                            <div class="col-sm-2">
+                                                                @*<select class="form-control">*@
+                                                                @*<option ng-select="{{ items[$index].correct = false }} ">Wrong</option>*@
+                                                                @*<option ng-select="{{ items[$index].correct = false }} " >Correct</option>*@
+                                                                @*</select>*@
+                                                                    Correct?
+                                                                <input type="checkbox" ng-model="items[$index].correct" ng-change="toggleCorrect({{$index}})"/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
 
-                                                <div class="col-sm-2">
-                                                    @*<select class="form-control">*@
-                                                        @*<option ng-select="{{ items[$index].correct = false }} ">Wrong</option>*@
-                                                        @*<option ng-select="{{ items[$index].correct = false }} " >Correct</option>*@
-                                                    @*</select>*@
-                                                    Correct?
-                                                    <input type="checkbox" ng-model="items[$index].correct" ng-change="toggleCorrect({{$index}})"/>
+                                                <div class="row">
+                                                    <div class="icon-box col-sm-1 col-sm-offset-5" ng-click="addOption()">
+                                                        <i class="fa fa-plus fa-2x fa-round text-theme" >
+                                                        </i>
+                                                    </div>
+
+                                                    <div class="icon-box col-sm-1" ng-click="delOption()">
+                                                        <i class="fa fa-minus fa-2x fa-round text-theme" >
+                                                        </i>
+                                                    </div>
                                                 </div>
+
+
+                                                <div class="form-group">
+                                                    <div class="row">
+                                                        <div class="col-sm-6">
+                                                            <select class="form-control" ng-model="difficultyLevel">
+                                                            @for(cType <- models.ot.Enums.DifficultyType.values()){
+                                                                <option value="@cType.getEventValue">@cType.name()</option>
+                                                            }
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-sm-6">
+                                                            <select class="form-control" ng-model="questionType">
+                                                            @for(cType <- models.ot.Enums.QuestionType.values()){
+                                                                <option value="@cType.getEventValue">@cType.name()</option>
+                                                            }
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <input type="button" class="btn btn-primary" ng-click="submitQuestion()"  value="Submit"/>
+
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div class="row">
-                                        <div class="icon-box col-sm-1 col-sm-offset-5" ng-click="addOption()">
-                                            <i class="fa fa-plus fa-2x fa-round text-theme" >
-                                            </i>
-                                        </div>
+                                    <!-- LIST ALL QUESTION LIST -->
 
-                                        <div class="icon-box col-sm-1" ng-click="delOption()">
-                                            <i class="fa fa-minus fa-2x fa-round text-theme" >
-                                            </i>
-                                        </div>
-                                    </div>
+                                    <div role="tabpanel" class="tab-pane fade" id="allQuestionTab" ng-controller="QuestionListController">
 
-
-                                    <div class="form-group">
-                                        <div class="row">
-                                            <div class="col-sm-6">
-                                                <select class="form-control" ng-model="difficultyLevel">
-                                                @for(cType <- models.ot.Enums.DifficultyType.values()){
-                                                    <option value="@cType.getEventValue">@cType.name()</option>
-                                                }
-                                                </select>
+                                        <div class="panel panel-default" ng-repeat="item in items">
+                                            <div class="panel-body">
+                                                {{ $index+1 }} : {{ item.question }}
+                                                    <a href="#" ><i class="fa fa-edit"></i></a>
+                                                    <a href="#" ><i class="fa fa-trash"></i></a>
                                             </div>
-                                            <div class="col-sm-6">
-                                                <select class="form-control" ng-model="questionType">
-                                                @for(cType <- models.ot.Enums.QuestionType.values()){
-                                                    <option value="@cType.getEventValue">@cType.name()</option>
-                                                }
-                                                </select>
+                                            <ul>
+                                                <li ng-repeat="option in item.options">
+
+                                                        <i ng-if="option.correct" class="fa fa-check" style="color: green"></i>
+                                                        <i ng-if="!option.correct" class="fa fa-close" style="color: red"></i>
+                                                        {{ option.value }}
+                                                </li>
+                                            </ul>
+                                            <div class="panel-footer clearfix">
+                                                    <div class="pull-right">
+                                                        <a href="#" class="btn btn-primary">Learn More</a>
+                                                        <a href="#" class="btn btn-default">Go Back</a>
+                                                    </div>
                                             </div>
                                         </div>
+
+                                        <hr class="hr-divider">
+
+                                        <button class="btn btn-primary btn-lg btn-rounded btn-ghost" type="button" ng-click="loadMoreQuestion()">Load more !</button>
                                     </div>
-
-                                    <input type="button" class="btn btn-primary" ng-click="submitQuestion()"  value="Submit"/>
-
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                    <hr class="hr-divider">
+                </div>
             </div>
-                <!-- SECTION FOOTER -->
+
+
+
+
+            <!-- SECTION FOOTER -->
                 <!--===============================================================-->
             @helpers.footer()
 
@@ -167,12 +223,41 @@
         <script src="@routes.Assets.versioned("ztheme/assets/js/page/theme.js")"></script>
 
         <script>
+            var page = -1;
             var app = angular.module('otApp',[]);
 
-            app.controller('QuestionSubmitController', function ( $scope, $http ) {
+            app.service('sharedResponse', function(){
+                var errors=[];
+                var success=[];
+                return {
+                    getErrors : function(){
+                        return errors;
+                    },
+                    getSuccess : function(){
+                        return success;
+                    } ,
+                    setErrors : function(value){
+                        errors = value;
+                    },
+                    setSuccess : function(value){
+                        success = value;
+                    }
+                };
+            });
 
+            app.controller('ResponseController', function($scope, sharedResponse){
                 $scope.success = [];
                 $scope.errors = [];
+                $scope.$watch(function(){return sharedResponse.getErrors()+sharedResponse.getSuccess() }, function(newVal){
+                    $scope.success = sharedResponse.getSuccess();
+                    $scope.errors = sharedResponse.getErrors();
+
+                }, true);
+            });
+
+            app.controller('QuestionSubmitController', function ( $scope, $http, sharedResponse ) {
+
+
 
                 $scope.question = "This";
                 $scope.addOption = function(){
@@ -197,14 +282,16 @@
                 $scope.items = [{index:1 , value:'Option 1', correct:false}];
 
                 $scope.submitQuestion = function() {
-                    $scope.success = [];
-                     $scope.errors = [];
+
+                    sharedResponse.setErrors([]);
+                    sharedResponse.setSuccess([]);
 
                     console.log("inside submit question ");
                         $http ( {
                             method : 'POST',
                             url : '/new_question',
                             data : {
+                                id:null,
                                 question : $scope.question,
                                 answers : $scope.items,
                                 questionType : $scope.questionType,
@@ -214,14 +301,53 @@
                             } ).then ( function successCallback ( response ) {
                                     res  = response;
                                     console.log ( "succcess" ) ;
-                                    $scope.success = response.data.success;
+                                    sharedResponse.setSuccess(response.data.success);
                                 }, function errorCallback ( response ) {
                                     res  = response;
                                     console.log ( "error" ) ;
-                                    $scope.errors = response.data.error;
+                                    sharedResponse.setErrors(response.data.error);
                                 } ) ;
                     };
             });
+
+            app.controller('QuestionListController', function($scope, $http){
+             $scope.key = "@key";
+             item = {
+                        id:1,
+                        question : 'This is hard coded question' ,
+                        options : [
+                            {value : 'Option 1', correct:false},
+                            {value : 'Option 2', correct:true},
+                            {value : 'Option 3', correct:false},
+                            {value : 'Option 1', correct:true},
+                        ],
+                        questionType:1,
+                        difficultyLevel:1
+                    }
+                $scope.items = [];
+                $scope.items.push(item);
+
+                $scope.loadMoreQuestion = function (){
+                    page = page+1;
+                    $http ( {
+                        method : 'POST',
+                        url : '/list_questions?page='+page,
+                        data : {
+                            key : $scope.key
+                        }
+                    } ).then ( function successCallback ( response ) {
+                    console.log ( "succcess" ) ;
+                    $scope.items = $scope.items.concat(response.data.data);
+                    }, function errorCallback ( response ) {
+                    console.log ( "error" ) ;
+                    sharedResponse.setErrors(response.data.error);
+                    } ) ;
+                };
+
+            });
+
+
+
         </script>
     </body>
 </html>

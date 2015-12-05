@@ -61,6 +61,13 @@ public class Question  extends Model {
         super.refresh();
     }
 
+    public void delete(){
+        for(Option option:this.getOptions()){
+            option.delete();
+        }
+        super.delete();
+    }
+
 
     public String getQuestion() {
         return question;

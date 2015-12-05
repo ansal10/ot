@@ -11,6 +11,8 @@ import controllers.ot.forms.SignupForm;
 import controllers.ot.mapper.NewQuestionRequestMapper;
 import controllers.ot.security.Secured;
 import models.ot.Enums.PermissionType;
+import models.ot.Option;
+import models.ot.Question;
 import models.ot.Users;
 import play.data.Form;
 import play.filters.csrf.AddCSRFToken;
@@ -22,6 +24,7 @@ import play.mvc.Security;
 import views.html.ot.ztheme.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -167,7 +170,8 @@ public class OtApplication extends Controller {
 
 
     @Security.Authenticated(Secured.class)
-    public Result newQuestionPOST(){
+    public Result newQuestionPOST() throws InterruptedException {
+        Thread.sleep(2000);
         Users user = Users.findUserByUsername(session().get("username"));
         if(user == null) return loginFailedState();
         if(!user.isPermitted(PermissionType.CAN_ADD_QUESTIONS)) return unAuthenticatedRequset();
@@ -197,9 +201,44 @@ public class OtApplication extends Controller {
         }
     }
 
+    @Security.Authenticated(Secured.class)
+    public Result questionList(Long page){
+        Users user = Users.findUserByUsername(session().get("username"));
+        ObjectNode result = Json.newObject();
+        if(user == null){
+            result.putArray(ERROR_KEY).add("User not logged in ! Re login and try ! ");
+            return unauthorized(result);
+        }
+        if(!Form.form().bindFromRequest().get("key").equals(NEW_QUESTION_KEY)) {
+            result.putArray(ERROR_KEY).add("API KEY validation failed");
+            return unauthorized(result);
+        }
+
+        List<Question> questions = Question.find.where().order("id").findPagedList(page.intValue(), 100).getList();
+        ArrayNode arrayNode = result.putArray("data");
+        for(Question question:questions){
+            ObjectNode node = Json.newObject();
+            node.put("id",question.getId());
+            node.put("question", question.getQuestion());
+            node.put("questionType", question.getQuestionType().getEventValue());
+            node.put("difficultyLevel", question.getDifficultyType().getEventValue());
+            ArrayNode optionsNode = node.putArray("options");
+            for(Option option:question.getOptions()){
+                ObjectNode optionNode = Json.newObject();
+                optionNode.put("value", option.getOption());
+                optionNode.put("correct", option.isCorrect());
+                optionsNode.add(optionNode);
+            }
+            arrayNode.add(node);
+        }
+        return ok(result);
+    }
+
     public Result logout(){
-        session().clear();
-        flash(SUCCESS_KEY, "Logout successfully");
+        if(!session().isEmpty()){
+            session().clear();
+            flash(SUCCESS_KEY, "Logout successfully");
+        }
         return ok(index.render("Hello", null));
     }
 

@@ -26,6 +26,7 @@ public class NewQuestionRequestMapper {
     public static final String CORRECT_OPTION_MISSING = "No Option Marked as Correct";
     public static final String DUPLICATE_OPTION = "Duplicate Options are not Allowed";
 
+    private Long id;
     private String question;
     private List<Answer> answers;
     private QuestionType questionType;
@@ -81,6 +82,31 @@ public class NewQuestionRequestMapper {
 
     }
 
+    public boolean saveToDB(){
+        Ebean.beginTransaction();
+        Question newQuestion = new Question(this.question, this.difficultyLevel, this.questionType);
+        try{
+            if(this.id!=null){
+               Question.find.byId(String.valueOf(this.id)).delete();
+               newQuestion.setId(this.id);
+            }
+            newQuestion.save();
+            for (Answer answer: answers){
+                newQuestion.addOption(answer.getValue(), answer.getCorrect());
+            }
+            Ebean.commitTransaction();
+            return true;
+        }catch (Exception e){
+            e.printStackTrace();
+            Ebean.rollbackTransaction();
+            return false;
+        }finally {
+            Ebean.endTransaction();
+        }
+    }
+
+
+
     public boolean hasErrors(){
         return errors.size() > 0;
     }
@@ -133,22 +159,11 @@ public class NewQuestionRequestMapper {
         this.errors = errors;
     }
 
-    public boolean saveToDB(){
-        Ebean.beginTransaction();
-        try{
-            Question newQuestion = new Question(this.question, this.difficultyLevel, this.questionType);
-            newQuestion.save();
-            for (Answer answer: answers){
-                newQuestion.addOption(answer.getValue(), answer.getCorrect());
-            }
-            Ebean.commitTransaction();
-            return true;
-        }catch (Exception e){
-            e.printStackTrace();
-            Ebean.rollbackTransaction();
-            return false;
-        }finally {
-            Ebean.endTransaction();
-        }
+       public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }
