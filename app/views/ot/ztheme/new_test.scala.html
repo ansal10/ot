@@ -46,7 +46,7 @@
                         <div class="col-sm-6">
                             <ol class="breadcrumb text-right text-center-xs">
                                 <li>
-                                    <a href="#">Home</a>
+                                    <a href="javascript:void(0)">Home</a>
                                 </li>
                                 <li class="active">New Test</li>
                             </ol>
@@ -62,12 +62,12 @@
 
                 <div class="alert alert-success alert-dismissable fade in" ng-repeat="s in success">
                     <strong>Success ! </strong> {{ s }}
-                    <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
+                    <a href="javascript:void(0)" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
                 </div>
 
                 <div class="alert alert-danger alert-dismissable fade in" ng-repeat="e in errors">
                     <strong>Error ! </strong> {{ e }}
-                    <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
+                    <a href="javascript:void(0)" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
                 </div>
 
             </div>
@@ -178,8 +178,8 @@
                                         <div class="panel panel-default" ng-repeat="item in questions">
                                             <div class="panel-body">
                                                 {{ $index+1 }} : {{ item.question }}
-                                                    <a href="#" ><i class="fa fa-edit"></i></a>
-                                                    <a href="#" ><i class="fa fa-trash"></i></a>
+                                                    <a href="javascript:void(0)" ><i class="fa fa-edit"></i></a>
+                                                    <a href="javascript:void(0)" ><i class="fa fa-trash"></i></a>
                                             </div>
                                             <ul>
                                                 <li ng-repeat="option in item.options">
