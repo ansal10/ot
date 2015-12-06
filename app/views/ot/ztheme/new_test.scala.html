@@ -15,6 +15,11 @@
             <!-- Fonts -->
         <!-- <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,600,700,800,300' rel='stylesheet' type='text/css'>  -->
         <link href="@routes.Assets.versioned("stylesheets/font-awesome.min.css")" rel="stylesheet">
+
+        <!-- Plugins -->
+
+
+
             <!-- Theme -->
         <link rel="stylesheet" type="text/css" href="@routes.Assets.versioned("ztheme/assets/css/theme.css")">
             <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -36,14 +41,14 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-sm-6">
-                            <h1 class="heading-page text-center-xs">Login</h1>
+                            <h1 class="heading-page text-center-xs">New Test</h1>
                         </div>
                         <div class="col-sm-6">
                             <ol class="breadcrumb text-right text-center-xs">
                                 <li>
                                     <a href="#">Home</a>
                                 </li>
-                                <li class="active">New Question</li>
+                                <li class="active">New Test</li>
                             </ol>
                         </div>
                     </div>
@@ -80,17 +85,25 @@
                             <div class="tabs-top tabs-justified-top">
                                 <ul class="nav nav-tabs nav-justified" role="tablist">
                                     <li role="presentation" class="active">
-                                        <a href="#newQuestionTab" aria-controls="home-3" role="tab" data-toggle="tab" class="title-md">Add new Question</a>
+                                        <a href="#newTestTab" aria-controls="message-3" role="tab" data-toggle="tab" class="title-md">New Test</a>
                                     </li>
                                     <li role="presentation">
-                                        <a href="#allQuestionTab" aria-controls="profile-3" role="tab" data-toggle="tab" class="title-md">List All Question</a>
+                                        <a href="#newQuestionTab" aria-controls="home-3" role="tab" data-toggle="tab" class="title-md">New Question</a>
+                                    </li>
+                                    <li role="presentation">
+                                        <a href="#allQuestionTab" aria-controls="profile-3" role="tab" data-toggle="tab" class="title-md">All Question</a>
                                     </li>
                                 </ul>
                                 <div class="tab-content">
 
+                                    <!-- NEW TEST FORM -->
+
+                                    <div role="tabpanel" class="tab-pane fade in active" id="newTestTab" ng-view >
+
+                                    </div>
                                     <!-- NEW QUESTION FORM -->
 
-                                    <div role="tabpanel" class="tab-pane fade in active" id="newQuestionTab" ng-controller="QuestionSubmitController">
+                                    <div role="tabpanel" class="tab-pane fade" id="newQuestionTab" ng-controller="QuestionSubmitController">
                                         <div class="panel panel-primary text-theme" >
                                             <div class="panel-heading">
                                                 <h3 class="panel-title">New Question</h3>
@@ -113,10 +126,6 @@
                                                             </div>
 
                                                             <div class="col-sm-2">
-                                                                @*<select class="form-control">*@
-                                                                @*<option ng-select="{{ items[$index].correct = false }} ">Wrong</option>*@
-                                                                @*<option ng-select="{{ items[$index].correct = false }} " >Correct</option>*@
-                                                                @*</select>*@
                                                                     Correct?
                                                                 <input type="checkbox" ng-model="items[$index].correct" ng-change="toggleCorrect({{$index}})"/>
                                                             </div>
@@ -166,7 +175,7 @@
 
                                     <div role="tabpanel" class="tab-pane fade" id="allQuestionTab" ng-controller="QuestionListController">
 
-                                        <div class="panel panel-default" ng-repeat="item in items">
+                                        <div class="panel panel-default" ng-repeat="item in questions">
                                             <div class="panel-body">
                                                 {{ $index+1 }} : {{ item.question }}
                                                     <a href="#" ><i class="fa fa-edit"></i></a>
@@ -182,8 +191,7 @@
                                             </ul>
                                             <div class="panel-footer clearfix">
                                                     <div class="pull-right">
-                                                        <a href="#" class="btn btn-primary">Learn More</a>
-                                                        <a href="#" class="btn btn-default">Go Back</a>
+                                                        <button class="btn btn-primary" ng-click="AddQuestionToTest($index)">Add to Test</button>
                                                     </div>
                                             </div>
                                         </div>
@@ -217,6 +225,7 @@
         </div>
             <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
         <script src="@routes.Assets.versioned("javascripts/angular.js")"></script>
+        <script src="@routes.Assets.versioned("javascripts/angular-route.js")"></script>
         <script src="@routes.Assets.versioned("javascripts/jquery.js")"></script>
         <script src="@routes.Assets.versioned("ztheme/assets/js/page/page.navbar-fixed-shrinked.js")"></script>
         <script src="@routes.Assets.versioned("ztheme/js/bootstrap.min.js")"></script>
@@ -224,11 +233,15 @@
 
         <script>
             var page = -1;
-            var app = angular.module('otApp',[]);
+            var app = angular.module('otApp',['ngRoute']);
+            var errors=[];
+            var success=[];
+            var newTest={};
+            var questionList=[];
+            var selectedQuestionList=[];
 
             app.service('sharedResponse', function(){
-                var errors=[];
-                var success=[];
+
                 return {
                     getErrors : function(){
                         return errors;
@@ -241,7 +254,42 @@
                     },
                     setSuccess : function(value){
                         success = value;
+                    },
+                    setTest: function(value){
+                        newTest = value;
+                    },
+                    getTest : function(){
+                        return newTest;
+                    },
+                    getQuestionList: function(){
+                        return questionList;
+                    },
+                    setQuestionList: function(value){
+                        questionList = value;
+                    },
+                    addSingleQuestion: function(value){
+                        questionList.push(value);
+                    },
+                    addMultipleQuestion: function(value){
+                        questionList = questionList.concat(value)
+                    },
+                    getSelectedQuestionList: function(){
+                        return selectedQuestionList;
+                    },
+                    setSelectedQuestionList: function(value){
+                        selectedQuestionList = value;
+                    },
+                    addToSelectedQuestionList: function(value){
+                        var elem = questionList[value];
+                        selectedQuestionList.push(elem);
+                        questionList.splice(value,  1);
+                    },
+                    removeFromSelectedQuestionList: function(value){
+                        var elem=selectedQuestionList[value];
+                        questionList.push(elem);
+                        selectedQuestionList.splice(value, 1);
                     }
+
                 };
             });
 
@@ -310,9 +358,9 @@
                     };
             });
 
-            app.controller('QuestionListController', function($scope, $http){
+            app.controller('QuestionListController', function($scope, $http, sharedResponse){
              $scope.key = "@key";
-             item = {
+             question = {
                         id:1,
                         question : 'This is hard coded question' ,
                         options : [
@@ -323,9 +371,10 @@
                         ],
                         questionType:1,
                         difficultyLevel:1
-                    }
-                $scope.items = [];
-                $scope.items.push(item);
+                    };
+                $scope.questions = [];
+                sharedResponse.addSingleQuestion(question);
+
 
                 $scope.loadMoreQuestion = function (){
                     page = page+1;
@@ -336,17 +385,69 @@
                             key : $scope.key
                         }
                     } ).then ( function successCallback ( response ) {
-                    console.log ( "succcess" ) ;
-                    $scope.items = $scope.items.concat(response.data.data);
+                        console.log ( "succcess" ) ;
+                        sharedResponse.addMultipleQuestion(response.data.data);
                     }, function errorCallback ( response ) {
-                    console.log ( "error" ) ;
-                    sharedResponse.setErrors(response.data.error);
+                        console.log ( "error" ) ;
+                        sharedResponse.setErrors(response.data.error);
                     } ) ;
                 };
+
+                $scope.AddQuestionToTest = function(index){
+                    sharedResponse.addToSelectedQuestionList(index);
+                };
+
+                $scope.$watch(function(){
+                    return sharedResponse.getQuestionList();
+                }, function(newVal){
+                    $scope.questions = sharedResponse.getQuestionList();
+                }, true);
 
             });
 
 
+
+
+            app.controller('CreateTestController', function($scope, sharedResponse){
+                $scope.test = sharedResponse.getTest();
+                $scope.$watch(function(){
+                    return $scope.test;
+                }, function(newVal){
+                    sharedResponse.setTest($scope.test);
+                }, true);
+            });
+
+            app.controller('AddQuestionController', function($scope, $http, sharedResponse){
+                $scope.test = sharedResponse.getTest();
+                $scope.questions = sharedResponse.getSelectedQuestionList();
+
+                $scope.RemoveQuestionFromTest = function(index){
+                    sharedResponse.removeFromSelectedQuestionList(index);
+                };
+
+                $scope.$watch([function(){
+                    return sharedResponse.getTest();
+                }, function(){
+                    return sharedResponse.getSelectedQuestionList();
+                }], function(){
+                    $scope.questions = sharedResponse.getSelectedQuestionList();
+                    $scope.test = sharedResponse.getTest();
+                }, true)
+
+
+            });
+
+            app.config(['$routeProvider' , function($routeProvider){
+                 $routeProvider.when('/new_test', {
+                     templateUrl : 'new_test/new_test_form',
+                     controller:'CreateTestController'
+                 } ).when('/add_question', {
+                     templateUrl : 'new_test/add_questions',
+                     controller : 'AddQuestionController'
+                 }).otherwise({
+                        redirectTo:'/new_test'
+                 })  ;
+            }]);
 
         </script>
     </body>

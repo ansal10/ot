@@ -1,7 +1,43 @@
 @(message: String)
 
-@main("Welcome to Play") {
 
-    @play20.welcome(message, style = "Java")
+<!DOCTYPE html>
+<html ng-app="MyApp">
+    <head lang="en">
+        <meta charset="UTF-8">
+        <title></title>
+            <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+        <script src="@routes.Assets.versioned("javascripts/jquery.js")"></script>
+        <script src="@routes.Assets.versioned("javascripts/angular.js")"></script>
+        <script src="@routes.Assets.versioned("javascripts/angular-route.min.js")"></script>
 
-}
+    </head>
+    <body>
+            Index page : @message
+            <a href="#/list">load list</a>
+            <div ng-view>
+
+        </div>
+    </body>
+
+    <script>
+        var appControllers = angular.module('MyApp', ['ngRoute']);
+
+        appControllers.controller('listController', ['$scope', function($scope){
+            $scope.message = "This is the list controller";
+        }]) ;
+
+        appControllers.controller('indexController', ['$scope', function($scope){
+            $scope.message = "This is the index controller"
+        }]);
+
+        appControllers.config(['$routeProvider' , function($routeProvider){
+        $routeProvider.when('/list' , {
+                templateUrl:'/list',
+                controller:'listController'
+            } ).otherwise({
+                redirectTo: '/'
+            });
+        }])
+    </script>
+</html>

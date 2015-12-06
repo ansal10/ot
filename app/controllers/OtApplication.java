@@ -235,6 +235,20 @@ public class OtApplication extends Controller {
         return ok(result);
     }
 
+    @Security.Authenticated(Secured.class)
+    public Result newTest(){
+        Users users = Users.findUserByUsername(session().get("username"));
+        if(users == null)loginFailedState();
+        return  ok(new_test.render(NEW_QUESTION_KEY, users));
+    }
+
+
+    @Security.Authenticated(Secured.class)
+    public Result newTestPost(){
+
+        return null;
+    }
+
     public Result logout(){
         if(!session().isEmpty()){
             session().clear();

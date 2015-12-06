@@ -1,0 +1,73 @@
+@(message:String)
+<div class="panel panel-primary text-theme">
+    <div class="panel-heading">
+        <h3 class="panel-title">Create New Test</h3>
+    </div>
+    <div class="panel-body" style="background: antiquewhite">
+        <div class="form-horizontal">
+                <!-- Test Name -->
+            <div class="form-group">
+                <label for="inputTestName" class="control-label col-sm-3"  >Test Name</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" id="inputTestName" placeholder="Name of the test" ng-model="test.testName">
+                </div>
+            </div>
+                <!-- Test Type -->
+            <div class="form-group">
+                <label for="inputTestType" class="control-label col-sm-3">Test Type</label>
+                <div class="col-sm-9">
+                    <select class="form-control" ng-model="test.testType">
+                    @for(cType <- models.ot.Enums.TestType.values()){
+                        <option value="@cType.getEventValue">@cType.name()</option>
+                    }
+                    </select>
+                </div>
+            </div>
+                <!-- Total Question -->
+            <div class="form-group">
+                <label for="inputTestTotalQuestion" class="control-label col-sm-3">Total Questions</label>
+                <div class="col-sm-9">
+                    <input type="number" class="form-control" id="inputTestTotalQuestion" placeholder="How many questions this test contains" ng-model="test.totalQuestion">
+                </div>
+            </div>
+
+                <!-- Correct Answer marks -->
+            <div class="form-group">
+                <label for="inputTestCorrectMark" class="control-label col-sm-3">Question score</label>
+                <div class="col-sm-9">
+                    <input type="number" class="form-control" id="inputTestCorrectMark" placeholder="How many marks does each question carry" ng-model="test.correctMarks">
+                </div>
+            </div>
+
+                <!-- Negative Marks -->
+            <div class="form-group">
+                <label for="inputNegativeMark" class="control-label col-sm-3">Negative score</label>
+                <div class="col-sm-9">
+                    <input type="number" class="form-control" id="inputNegativeMark" placeholder="How much marks should be deducted for wrong answer" ng-model="test.negativeMarks">
+                </div>
+            </div>
+
+                <!-- Test activation time -->
+            <div class="form-group">
+                <label for="inputTestActivationTime" class="control-label col-sm-3">Make Live at</label>
+                <div class="col-sm-9">
+                    <input type="datetime" class="form-control" id="inputTestActivationTime" placeholder="DD-MM-YY HH:MM" ng-model="test.testActivation">
+                </div>
+            </div>
+
+                <!-- Test duration in minutes -->
+            <div class="form-group">
+                <label for="inputTestDuration" class="control-label col-sm-3">Duration (mins)</label>
+                <div class="col-sm-9">
+                    <input type="number" class="form-control" id="inputTestDuration" placeholder="Input the duration in minutes" ng-model="test.testDuration">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-3" style="float: right">
+                   <a href="#/add_question"> <button  class="btn btn-primary" >Next</button> </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

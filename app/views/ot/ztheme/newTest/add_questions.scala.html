@@ -1,0 +1,66 @@
+@(message:String)
+<div class="panel panel-primary text-theme">
+    <div class="panel-heading">
+        <h3 class="panel-title">Create New Test</h3>
+    </div>
+    <div class="panel-body" style="background: antiquewhite">
+        <div class="form-horizontal">
+                <!-- Test Name -->
+            <div class="form-group">
+                <label class="control-label "  >Test Name : {{ test.testName }}</label>
+                <label class="control-label "  >Test Type : {{ test.testType }}</label>
+                <label class="control-label "  >Total Questions : {{ test.totalQuestion }}</label>
+                <label class="control-label "  >Question score : {{ test.correctMarks }}</label>
+                <label class="control-label "  >Negative score : {{ test.negativeMarks }}</label>
+                <label class="control-label "  >Will be Live at : {{ test.testActivation }}</label>
+                <label class="control-label "  >Test Duration : {{ test.testDuration }} minutes</label>
+
+                <hr class="hr-divider">
+                <div class="row">
+                    <div class="col-sm-6 col-sm-offset-0">
+                        <a href="#" class="list-group-item">Questions added to test
+                            <span class="badge">{{ questions.length }}</span>
+                        </a>
+                    </div>
+                    <div class="col-sm-6">
+                        <a href="#" class="list-group-item">Questions to add
+                            <span class="badge">{{ test.totalQuestion - questions.length }}</span>
+                        </a>
+                    </div>
+                </div>
+
+                <hr class="hr-divider">
+
+                <div class="panel panel-default" ng-repeat="item in questions">
+                    <div class="panel-body">
+                        {{ $index+1 }} : {{ item.question }}
+                        <a href="javascript:void(0)" ng-click="RemoveQuestionFromTest($index)" ><i class="fa fa-trash"></i></a>
+                    </div>
+                    <ul>
+                        <li ng-repeat="option in item.options">
+
+                            <i ng-if="option.correct" class="fa fa-check" style="color: green"></i>
+                            <i ng-if="!option.correct" class="fa fa-close" style="color: red"></i>
+                            {{ option.value }}
+                        </li>
+                    </ul>
+                </div>
+
+
+            </div>
+
+
+            <div class="form-group">
+                <div class="col-sm-3" style="float: right">
+                    <button  class="btn btn-green">Submit</button>
+                </div>
+                <div class="col-sm-3" style="float: left">
+                    <a href="#/new_test">
+                        <button  class="btn btn-primary">Previous</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
