@@ -66,6 +66,7 @@ public class PostQuestionTest {
         Result result = route(fakeRequest);
         String body = new String(JavaResultExtractor.getBody(result, 0L));
         assertTrue(body.contains("success"));
+        assertTrue(body.contains("\"id\":1"));
         assertEquals(OK, result.status());
         assertEquals(Question.find.byId("1").getQuestion(), "This is an question");
     }

@@ -196,6 +196,7 @@ public class OtApplication extends Controller {
                 return badRequest(result);
             }else {
                 result.putArray(SUCCESS_KEY).add("Question submitted successfully");
+                result.put("id", requestMapper.getQuestionId());
                 return ok(result);
             }
         }
@@ -214,7 +215,7 @@ public class OtApplication extends Controller {
             return unauthorized(result);
         }
 
-        List<Question> questions = Question.find.where().order("id").findPagedList(page.intValue(), 100).getList();
+        List<Question> questions = Question.find.where().order("id").findPagedList(page.intValue(), 1).getList();
         ArrayNode arrayNode = result.putArray("data");
         for(Question question:questions){
             ObjectNode node = Json.newObject();

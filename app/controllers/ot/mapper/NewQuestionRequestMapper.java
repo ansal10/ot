@@ -36,6 +36,9 @@ public class NewQuestionRequestMapper {
     @Ignore
     private List<String> errors;
 
+    @Ignore
+    private Long questionId;
+
 
 
     public  NewQuestionRequestMapper parseFromJSON(JsonNode json){
@@ -95,10 +98,12 @@ public class NewQuestionRequestMapper {
                 newQuestion.addOption(answer.getValue(), answer.getCorrect());
             }
             Ebean.commitTransaction();
+            this.questionId = newQuestion.getId();
             return true;
         }catch (Exception e){
             e.printStackTrace();
             Ebean.rollbackTransaction();
+            this.questionId = null;
             return false;
         }finally {
             Ebean.endTransaction();
@@ -159,11 +164,19 @@ public class NewQuestionRequestMapper {
         this.errors = errors;
     }
 
-       public Long getId() {
+    public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getQuestionId() {
+        return questionId;
+    }
+
+    public void setQuestionId(Long questionId) {
+        this.questionId = questionId;
     }
 }
