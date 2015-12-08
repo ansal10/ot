@@ -54,7 +54,6 @@
             <!-- Flash and ajax error and success message -->
 
             <div class="col-md-8 col-sm-offset-2" ng-controller="ResponseController" >
-
                 <div class="alert alert-success alert-dismissable fade in" ng-repeat="s in success">
                     <strong>Success ! </strong> {{ s }}
                     <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
@@ -64,10 +63,9 @@
                     <strong>Error ! </strong> {{ e }}
                     <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
                 </div>
-
             </div>
-                <!-- SECTION -->
-                <!--===============================================================-->
+            <!-- SECTION -->
+            <!--===============================================================-->
 
 
             <!-- NAV BAR TAB -->
@@ -80,10 +78,10 @@
                             <div class="tabs-top tabs-justified-top">
                                 <ul class="nav nav-tabs nav-justified" role="tablist">
                                     <li role="presentation" class="active">
-                                        <a href="#newQuestionTab" aria-controls="home-3" role="tab" data-toggle="tab" class="title-md">Add new Question</a>
+                                        <a href="#newQuestionTab" id="newQuestionTabClick" aria-controls="home-3" role="tab" data-toggle="tab" class="title-md">Add new Question</a>
                                     </li>
                                     <li role="presentation">
-                                        <a href="#allQuestionTab" aria-controls="profile-3" role="tab" data-toggle="tab" class="title-md">List All Question</a>
+                                        <a href="#allQuestionTab" id="allQuestionTabClick"aria-controls="profile-3" role="tab" data-toggle="tab" class="title-md">List All Question</a>
                                     </li>
                                 </ul>
                                 <div class="tab-content">
@@ -98,10 +96,10 @@
                                             <div class="panel-body" style="background: antiquewhite">
                                                 <div class="form-group">
                                                     <label for="question">Question:</label>
-                                                    <textarea class="form-control" rows="5" id="question" ng-model="question"></textarea>
+                                                    <textarea class="form-control" rows="5" id="question" ng-model="quest.question"></textarea>
                                                 </div>
 
-                                                <div ng-repeat="item in items">
+                                                <div ng-repeat="item in quest.options">
                                                     <div class="form-group">
                                                         <div class="row">
                                                             <div class="col-sm-1">
@@ -109,7 +107,7 @@
                                                             </div>
 
                                                             <div class="col-sm-9">
-                                                                <textarea class="form-control" rows="2"  ng-model="items[$index].value">{{ item.value }}</textarea>
+                                                                <textarea class="form-control" rows="2"  ng-model="quest.options[$index].value">{{ item.value }}</textarea>
                                                             </div>
 
                                                             <div class="col-sm-2">
@@ -118,7 +116,7 @@
                                                                 @*<option ng-select="{{ items[$index].correct = false }} " >Correct</option>*@
                                                                 @*</select>*@
                                                                     Correct?
-                                                                <input type="checkbox" ng-model="items[$index].correct" ng-change="toggleCorrect({{$index}})"/>
+                                                                <input type="checkbox" ng-model="quest.options[$index].correct" ng-change="toggleCorrect({{$index}})"/>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -140,6 +138,7 @@
                                                 <div class="form-group">
                                                     <div class="row">
                                                         <div class="col-sm-6">
+                                                            DIfficulty Level
                                                             <select class="form-control" ng-model="difficultyLevel">
                                                             @for(cType <- models.ot.Enums.DifficultyType.values()){
                                                                 <option value="@cType.getEventValue">@cType.name()</option>
@@ -147,6 +146,7 @@
                                                             </select>
                                                         </div>
                                                         <div class="col-sm-6">
+                                                            Question Type
                                                             <select class="form-control" ng-model="questionType">
                                                             @for(cType <- models.ot.Enums.QuestionType.values()){
                                                                 <option value="@cType.getEventValue">@cType.name()</option>
@@ -169,8 +169,8 @@
                                         <div class="panel panel-default" ng-repeat="item in items">
                                             <div class="panel-body">
                                                 {{ $index+1 }} : {{ item.question }}
-                                                    <a href="#" ><i class="fa fa-edit"></i></a>
-                                                    <a href="#" ><i class="fa fa-trash"></i></a>
+                                                    <a href="javascript:void(0)" ng-click="editQuestion($index)"><i class="fa fa-edit"></i></a>
+                                                    <a href="javascript:void(0)" ><i class="fa fa-trash"></i></a>
                                             </div>
                                             <ul>
                                                 <li ng-repeat="option in item.options">
@@ -229,6 +229,8 @@
             app.service('sharedResponse', function(){
                 var errors=[];
                 var success=[];
+                var question={};
+                var questionList=[];
                 return {
                     getErrors : function(){
                         return errors;
@@ -241,6 +243,18 @@
                     },
                     setSuccess : function(value){
                         success = value;
+                    },
+                    setQuestion : function(value){
+                        question = value;
+                    },
+                    getQuestion : function(){
+                        return question;
+                    },
+                    getQuestionList : function(){
+                        return questionList;
+                    },
+                    addQuestionToQuestionlist : function(value){
+                        questionList.push(value);
                     }
                 };
             });
@@ -258,16 +272,24 @@
             app.controller('QuestionSubmitController', function ( $scope, $http, sharedResponse ) {
 
 
+                $scope.quest = sharedResponse.getQuestion();
+                $scope.key = "@key";
+                $scope.quest.options = [{index:1 , value:'Option 1', correct:false}];
 
-                $scope.question = "This";
+                $scope.$watch(function(){
+                    return sharedResponse.getQuestion();
+                }, function(newVal){
+                    $scope.quest = sharedResponse.getQuestion();
+                }, true);
+
                 $scope.addOption = function(){
-                    $scope.items.push({ index:($scope.items.length+1) , value:'Default' , correct:false });
-                    console.log($scope.items);
+                    $scope.quest.options.push({ index:($scope.quest.options.length+1) , value:'Default' , correct:false });
+                    console.log($scope.quest.options);
                 };
 
                 $scope.delOption = function(){
-                    $scope.items.pop();
-                    console.log($scope.items);
+                    $scope.quest.options.pop();
+                    console.log($scope.quest.options);
                 };
 
                 $scope.toggleCorrect = function(index){
@@ -275,11 +297,6 @@
 //                    $scope.items[index].correct = !$scope.items[index].correct;
                 };
 
-                $scope.questionType = 1;
-                $scope.difficultyLevel = 1;
-                $scope.key = "@key";
-
-                $scope.items = [{index:1 , value:'Option 1', correct:false}];
 
                 $scope.submitQuestion = function() {
 
@@ -291,17 +308,22 @@
                             method : 'POST',
                             url : '/new_question',
                             data : {
-                                id:null,
-                                question : $scope.question,
-                                answers : $scope.items,
-                                questionType : $scope.questionType,
-                                difficultyLevel : $scope.difficultyLevel,
+                                id:$scope.quest.id,
+                                question : $scope.quest.question,
+                                answers : $scope.quest.options,
+                                questionType : $scope.quest.questionType,
+                                difficultyLevel : $scope.quest.difficultyLevel,
                                 key : $scope.key
                             }
                             } ).then ( function successCallback ( response ) {
                                     res  = response;
                                     console.log ( "succcess" ) ;
                                     sharedResponse.setSuccess(response.data.success);
+
+                                    if($scope.quest.id!=null){
+                                        sharedResponse.addQuestionToQuestionlist($scope.quest);
+                                    }
+
                                 }, function errorCallback ( response ) {
                                     res  = response;
                                     console.log ( "error" ) ;
@@ -310,7 +332,7 @@
                     };
             });
 
-            app.controller('QuestionListController', function($scope, $http){
+            app.controller('QuestionListController', function($scope, $http, sharedResponse){
              $scope.key = "@key";
              item = {
                         id:1,
@@ -319,13 +341,18 @@
                             {value : 'Option 1', correct:false},
                             {value : 'Option 2', correct:true},
                             {value : 'Option 3', correct:false},
-                            {value : 'Option 1', correct:true},
+                            {value : 'Option 1', correct:true}
                         ],
                         questionType:1,
                         difficultyLevel:1
-                    }
-                $scope.items = [];
-                $scope.items.push(item);
+                    };
+                $scope.items = sharedResponse.getQuestionList();
+                sharedResponse.addQuestionToQuestionlist(item);
+                $scope.$watch(function(){
+                    return sharedResponse.getQuestionList();
+                }, function(newVal){
+                    $scope.items = sharedResponse.getQuestionList()
+                })
 
                 $scope.loadMoreQuestion = function (){
                     page = page+1;
@@ -342,6 +369,26 @@
                     console.log ( "error" ) ;
                     sharedResponse.setErrors(response.data.error);
                     } ) ;
+                };
+
+                $scope.editQuestion = function (index){
+                    jQuery('#newQuestionTabClick' ).click();
+                    var quest = {};
+                    quest.question = $scope.items[index].question;
+                    quest.questionType = $scope.items[index].questionType+"";
+                    quest.difficultyLevel = $scope.items[index].difficultyLevel+"";
+                    quest.id = $scope.items[index ].id ;
+                    quest.options=[];
+                    for(var i  =0 ; i < $scope.items[index ].options.length ; i++){
+                        quest.options.push({
+                            index:i+1,
+                            value:$scope.items[index ].options[i ].value,
+                            correct:$scope.items[index ].options[i ].correct,
+                        });
+                    }
+                    sharedResponse.setQuestion(quest);
+                    $scope.items.splice(index, 1);
+
                 };
 
             });
