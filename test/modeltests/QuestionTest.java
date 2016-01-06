@@ -1,5 +1,7 @@
 package modeltests;
 
+import models.ot.Enums.DifficultyType;
+import models.ot.Enums.QuestionType;
 import models.ot.Option;
 import models.ot.Question;
 import org.junit.After;
@@ -12,6 +14,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static play.test.Helpers.*;
 
 public class QuestionTest {
@@ -30,7 +33,7 @@ public class QuestionTest {
         fakeApplication = fakeApplication(inMemoryDatabase());
         start(fakeApplication);
 
-        q1 = new Question(question1);
+        q1 = new Question(question1, DifficultyType.AVERAGE, QuestionType.APTITUDE);
         q1.save();
 
         for(String o : options1){
@@ -39,7 +42,7 @@ public class QuestionTest {
             else q1.addOption(o, false);
         }
 
-        q2 = new Question(question2);
+        q2 = new Question(question2, DifficultyType.EASY, QuestionType.ENGLISH);
         q2.save();
 
         for(String o:options2){
@@ -76,6 +79,16 @@ public class QuestionTest {
         assertEquals(question.getOptions().size() , options1.size());
         assertEquals(question.getCorrectOption().size(), 1);
         assertEquals(question_2.getCorrectOption().size(), 3);
+    }
+
+    @Test
+    public void updateQuestion(){
+        Question question = new Question("Awkward question", q2.getDifficultyType(), q2.getQuestionType());
+        question.setId(q2.getId());
+        question.update();
+        assertEquals(Question.find.all().size(), 2);
+        assertNotNull(Question.find.where().eq("question", question.getQuestion()).findUnique());
+        assertNull(Question.find.where().eq("question", q2.getQuestion()).findUnique());
     }
 
 

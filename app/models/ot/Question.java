@@ -1,6 +1,8 @@
 package models.ot;
 
 import com.avaje.ebean.Model;
+import models.ot.Enums.DifficultyType;
+import models.ot.Enums.QuestionType;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -22,6 +24,10 @@ public class Question  extends Model {
     @OneToMany
     private List<Option> options;
 
+    private DifficultyType difficultyType;
+
+    private QuestionType questionType;
+
 
     @OneToMany
     private List<TestQuestions> testQuestionses;
@@ -29,8 +35,10 @@ public class Question  extends Model {
     public static Finder<String, Question> find = new Finder<String, Question>(Question.class);
 
 
-    public Question(String question) {
+    public Question(String question, DifficultyType difficultyType, QuestionType questionType) {
         this.question = question;
+        this.difficultyType = difficultyType;
+        this.questionType = questionType;
     }
 
     public void addOption(String option, Boolean isCorrect){
@@ -51,6 +59,13 @@ public class Question  extends Model {
     public void save(){
         super.save();
         super.refresh();
+    }
+
+    public void delete(){
+        for(Option option:this.getOptions()){
+            option.delete();
+        }
+        super.delete();
     }
 
 
@@ -93,5 +108,21 @@ public class Question  extends Model {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public DifficultyType getDifficultyType() {
+        return difficultyType;
+    }
+
+    public void setDifficultyType(DifficultyType difficultyType) {
+        this.difficultyType = difficultyType;
+    }
+
+    public QuestionType getQuestionType() {
+        return questionType;
+    }
+
+    public void setQuestionType(QuestionType questionType) {
+        this.questionType = questionType;
     }
 }

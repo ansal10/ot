@@ -5,8 +5,11 @@ package models.ot.Enums;
  */
 
 public enum QuestionType {
-    MCQ(1),
-    SUBJECTIVE(2);
+    ENGLISH(0),
+    MATHS(1),
+    APTITUDE(2),
+    REASONING(3),
+    GENERAL_AWARENESS(4);
 
     public Long getEventValue() {
         return eventValue;

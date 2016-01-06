@@ -2,6 +2,7 @@ package models.ot;
 
 import com.avaje.ebean.Expr;
 import com.avaje.ebean.Model;
+import com.avaje.ebean.annotation.Index;
 import com.google.common.hash.Hashing;
 import models.ot.Enums.PermissionType;
 import org.apache.commons.codec.Charsets;
@@ -13,6 +14,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import java.util.List;
+import java.util.UUID;
+
 /**
  * Created by amd on 11/20/15.
  */
@@ -32,13 +35,19 @@ public class Users extends Model {
     @Column(length = 256)
     private String passwordHash;
 
-    @Column(length = 512)
+    @Column(length = 256)
     private String passwordSalt;
 
     private Boolean Active;
     private Boolean SuperUser;
     private DateTime createdOn;
     private DateTime passwordExpiredOn;
+
+    @Column(length = 256)
+    @Index
+    private String token;
+
+    private DateTime tokenExpiredOn;
 
     @Constraints.Email(message = "Not a valid Email")
     private String email;
@@ -49,8 +58,11 @@ public class Users extends Model {
     @OneToMany
     public List<Permission> permissions;
 
+    public String firstName;
+    public String lastName;
 
-    public Users(String username, String password, String email, Boolean Active, Boolean SuperUser) {
+
+    public Users(String username, String password, String email, String firstName, String lastName, Boolean Active, Boolean SuperUser) {
 
         DateTime now = new DateTime();
 
@@ -62,6 +74,12 @@ public class Users extends Model {
         this.email = email;
         this.passwordHash = Hashing.sha256().hashString(password, Charsets.UTF_8).toString();
         this.passwordSalt = Hashing.sha512().hashString(this.passwordHash, Charsets.UTF_8).toString();
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.usernameHash = Hashing.sha256().hashString(this.username, Charsets.UTF_8).toString();
+        this.setToken( createToken() );
+        this.setTokenExpiredOn(DateTime.now().plusMinutes(30));
+
     }
 
     public static Finder<String, Users> find = new Finder<String, Users>(Users.class);
@@ -106,17 +124,53 @@ public class Users extends Model {
     public boolean isPermitted(PermissionType permission){
 
 
-        Permission perm = Permission.find.where().eq("users_id",String.valueOf(this.getId()))
+        Permission perm = Permission.find.where().eq("users_id",this.getId())
                 .eq("permission", permission).findUnique();
         return perm != null;
 
     }
 
+    public String createToken() {
+        UUID uuid1 = UUID.randomUUID();
+        UUID uuid2 = UUID.randomUUID();
+        String token = Hashing.sha512().hashString(uuid1.toString(), Charsets.UTF_8).toString() +
+                Hashing.sha512().hashString(uuid2.toString(), Charsets.UTF_8).toString() ;
+        return token;
+    }
+
+    public static boolean activate(String token) throws Exception {
+        Users users = Users.find.where().eq("token", token).findUnique();
+        if (users == null)
+            throw new Exception(Users.TOKEN_NOT_EXIST);
+        if(DateTime.now().getMillis() > users.getTokenExpiredOn().getMillis())
+            throw new Exception(TOKEN_EXPIRED);
+        users.setActive(true);
+        users.save();
+        return true;
+    }
+
+    public static boolean resetPassword(String token, String password) throws Exception {
+        Users users = Users.find.where().eq("token", token).findUnique();
+        if (users == null)
+            throw new Exception(Users.TOKEN_NOT_EXIST);
+        if(DateTime.now().getMillis() > users.getTokenExpiredOn().getMillis())
+            throw new Exception(TOKEN_EXPIRED);
+        users.setRawPassword(password);
+        users.setActive(true);
+        users.save();
+        return true;
+    }
+
+    public static Users findUserByUsername(String username){
+        return Users.find.where().eq("username", username).eq("active",true).findUnique();
+    }
 
     public static final String USER_NOT_EXIST =  "User does not exist";
     public static final String USER_NOT_ACTIVE =  "User is not active";
     public static final String PASSWORD_EXPIRED = "Password expired";
     public static final String USERNAME_PASSWORD_NOT_MATCHED = "Username and password not matched";
+    public static final String TOKEN_NOT_EXIST = "The token does not exist";
+    public static final String TOKEN_EXPIRED = "The token expired";
 
 
     public Long getId() {
@@ -158,10 +212,6 @@ public class Users extends Model {
     public String getEmail() {
         return email;
     }
-
-//    public List<Test> getTests() {
-//        return tests;
-//    }
 
     public List<Permission> getPermissions() {
         return permissions;
@@ -207,10 +257,6 @@ public class Users extends Model {
         this.email = email;
     }
 
-//    public void setTests(List<Test> tests) {
-//        this.tests = tests;
-//    }
-
     public void setPermissions(List<Permission> permissions) {
         this.permissions = permissions;
     }
@@ -229,5 +275,48 @@ public class Users extends Model {
 
     public void setResults(List<Result> results) {
         this.results = results;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public DateTime getTokenExpiredOn() {
+        return tokenExpiredOn;
+    }
+
+    public void setTokenExpiredOn(DateTime tokenExpiredOn) {
+        this.tokenExpiredOn = tokenExpiredOn;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void resetToken(){
+        this.setToken(createToken());
+        this.setTokenExpiredOn(DateTime.now().plusMinutes(30));
+        this.save();
+    }
+
+    public void setRawPassword(String password){
+        this.passwordHash = Hashing.sha256().hashString(password, Charsets.UTF_8).toString();
+        this.passwordSalt = Hashing.sha512().hashString(this.passwordHash, Charsets.UTF_8).toString();
     }
 }

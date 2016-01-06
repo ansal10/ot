@@ -45,12 +45,16 @@
         <appender-ref ref="ASYNCSTDOUT" />
     </root>
 
-    <!--<root level="INFO">-->
-        <!--<appender-ref ref="ASYNCFILE" />-->
-    <!--</root>-->
+    <root level="INFO">
+        <appender-ref ref="ASYNCFILE" />
+    </root>
 
-    <!--<root level="DEBUG">-->
-        <!--<appender-ref ref="ASYNCSTDOUT" />-->
-    <!--</root>-->
+    <root level="ERROR">
+        <appender-ref ref="ASYNCFILE" />
+    </root>
+
+    <root level="DEBUG">
+        <appender-ref ref="ASYNCSTDOUT" />
+    </root>
 
 </configuration>

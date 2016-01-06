@@ -22,6 +22,10 @@ create table permission (
 create table question (
   id                        bigint not null,
   question                  varchar(10240),
+  difficulty_type           integer,
+  question_type             integer,
+  constraint ck_question_difficulty_type check (difficulty_type in (0,1,2,3,4,5)),
+  constraint ck_question_question_type check (question_type in (0,1,2,3,4)),
   constraint uq_question_question unique (question),
   constraint pk_question primary key (id))
 ;
@@ -70,12 +74,16 @@ create table users (
   username                  varchar(255),
   username_hash             varchar(256),
   password_hash             varchar(256),
-  password_salt             varchar(512),
+  password_salt             varchar(256),
   active                    boolean,
   super_user                boolean,
   created_on                timestamp,
   password_expired_on       timestamp,
+  token                     varchar(256),
+  token_expired_on          timestamp,
   email                     varchar(255),
+  first_name                varchar(255),
+  last_name                 varchar(255),
   constraint uq_users_username unique (username),
   constraint pk_users primary key (id))
 ;
@@ -108,6 +116,7 @@ alter table test_questions add constraint fk_test_questions_question_6 foreign k
 create index ix_test_questions_question_6 on test_questions (question_id);
 
 
+create index ix_users_token_7 on users(token);
 
 # --- !Downs
 
